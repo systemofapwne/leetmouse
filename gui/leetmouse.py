@@ -3,6 +3,8 @@
 
 import sys, os
 import time
+import functools
+from queue import Queue
 
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtCore import (QThread, QObject, pyqtSignal)
@@ -43,6 +45,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 class Leetmouse(QThread):
     ''' Main program: Merges UI and code and runs core program '''
     
+    SYSFS_PARAMS = "/sys/bus/usb/drivers/leetmouse/module/parameters"
+
     def __init__(self):
         super().__init__()
 
@@ -52,22 +56,76 @@ class Leetmouse(QThread):
         self.UI = self.Window.UI
         self.Window.show()
 
-        # Run program-code in separate thread (start() will call self.run, where all relevant background code will be handled)
+        # Hook UI to events
+        self.__hook()
+
+        # Run program-code in separate thread (start() will call self.run, where all relevant background code will be handled via an envent-queue)
+        self.queue = Queue()
         self.Running = True
         self.start()
 
         # Register exit handler
         self.App.aboutToQuit.connect(self.__onExit)
         sys.exit(self.App.exec_()) # Opens the MainWindow
+    
+    def enqueue(delay=0):
+        """ As 'enqueued' decorated functions will add their action to the event-queue for queued (and probably) delayed execution """
+        def decorator_enqueue(func):
+            @functools.wraps(func)
+            def wrapper(self, *args, **kwargs):
+                def queued_item():
+                    if delay != 0:
+                        time.sleep(delay)
+                    return func(self, *args, **kwargs)
+                self.queue.put(queued_item)
+        
+            return wrapper
+        
+        return decorator_enqueue
+    
+    # Delay of one second is enforced in the driver itself! (Best offerts towards Anti-Cheats). So we already delay it here!
+    @enqueue(delay=1)
+    def applyParams(self):
+        """ Apply new acceleration parameters to the leetmouse kernel module """
+        self.readParams()
+        
+    def readParams(self):
+        """ Reads the latest parameters from the kernel module """
+        #### TODO write a dedicated/util class for reading & updating parameters to keep the main-program lean & mean
+        with open(f"{self.SYSFS_PARAMS}/PreScaleX", 'r') as f:
+            print(f.readline())
 
     def run(self):
         ''' Runs the continous calculation in separate thread via QThread, in order to not block the GUI thread '''
         while(self.Running):
+            if not self.queue.empty():
+                try:
+                    self.queue.get()()
+                except Exception as e:
+                    print(f"EventQueue: {e}")
             time.sleep(0.05)
     
     def __onExit(self):
         ''' Exit handler '''
         self.Running = False    # Stops the QThread when exit signal has been triggered
-
+    
+    def __hook(self):
+        ''' Hook to UI element events in order to process an action on the secondary thread '''
+        # Define some convenient helpers to reduce code blowup below
+        def H(ui, trigger, callback, value = None, update = None):
+            if(update):
+                def cb(v = None):
+                    if(value == None):
+                        callback()
+                    else:
+                        callback(v)
+                    #self.__updateUI()
+                hook(getattr(self.UI,ui), trigger, cb, value)
+            else:
+                hook(getattr(self.UI,ui), trigger, callback, value)
+        
+        # <UI Element>          <UI event Trigger>      <Callback to execute>   <UI method to read value>   <Instant-Update plots>
+        H("Apply",              "clicked",              self.applyParams)
+            
 if __name__ == '__main__':
     Leetmouse()

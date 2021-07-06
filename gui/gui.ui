@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>882</width>
-    <height>497</height>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,88 +26,12 @@
       <x>10</x>
       <y>60</y>
       <width>321</width>
-      <height>431</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="title">
      <string/>
     </property>
-    <widget class="QDoubleSpinBox" name="Sensitivity">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>150</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>150</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Sensitivity</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="Acceleration">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>210</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>210</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Acceleration</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
@@ -165,234 +89,6 @@
       <string>Current</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>290</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Sensitivity Cap</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="SensitivityCap">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>290</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_8">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>180</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Offset</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="Offset">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>180</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="Power">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>240</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_9">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>240</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Power</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Pre-Scale X</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="PreScaleX">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>40</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="PreScaleY">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>70</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_11">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Pre-Scale Y</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="SpeedCap">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>100</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_12">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Speed Cap</string>
-     </property>
-    </widget>
     <widget class="Line" name="line">
      <property name="geometry">
       <rect>
@@ -410,128 +106,20 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>270</y>
+       <y>310</y>
        <width>301</width>
        <height>16</height>
       </rect>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="PostScaleX">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>320</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_13">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>320</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Post-Scale X</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>350</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Post-Scale Y</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="PostScaleY">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>350</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="EnablePreScaleY">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>70</y>
-       <width>21</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="EnablePostScaleY">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>350</y>
-       <width>21</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
      </property>
     </widget>
     <widget class="Line" name="line_3">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>380</y>
+       <y>420</y>
        <width>301</width>
        <height>16</height>
       </rect>
@@ -540,43 +128,931 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QLabel" name="label_15">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>40</y>
+       <width>321</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QCheckBox" name="EnablePreScaleY">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>30</y>
+        <width>21</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="SpeedCap_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>60</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="PreScaleY">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>30</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="SpeedCap">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>60</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="PreScaleX">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>0</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="PreScaleX_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>0</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="PreScaleY_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>30</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_12">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Speed Cap</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pre-Scale Y</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pre-Scale X</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>400</y>
-       <width>111</width>
-       <height>22</height>
+       <y>150</y>
+       <width>311</width>
+       <height>161</height>
       </rect>
      </property>
-     <property name="text">
-      <string>Scrolls per Tick</string>
+     <property name="autoFillBackground">
+      <bool>false</bool>
      </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="ScrollsPerTick">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>400</y>
-       <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="buttonSymbols">
-      <enum>QAbstractSpinBox::NoButtons</enum>
-     </property>
-     <property name="showGroupSeparator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
+     <property name="title">
       <string/>
      </property>
-     <property name="decimals">
-      <number>0</number>
+     <property name="flat">
+      <bool>true</bool>
      </property>
-     <property name="maximum">
-      <double>999999999999999.000000000000000</double>
+     <widget class="QDoubleSpinBox" name="Power_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>130</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>40</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Sensitivity</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="Acceleration">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>100</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>70</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Offset</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="Sensitivity_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>40</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="Offset_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>70</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="Power">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>130</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>130</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Power</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="Acceleration_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>100</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>100</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Acceleration</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="Offset">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>70</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="Sensitivity">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>40</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="Method">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>211</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="Method_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>10</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>330</y>
+       <width>311</width>
+       <height>91</height>
+      </rect>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QDoubleSpinBox" name="PostScaleY_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>60</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="EnablePostScaleY">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>60</y>
+        <width>21</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Sensitivity Cap</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_13">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>30</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Post-Scale X</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="PostScaleX">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>30</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="PostScaleX_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>30</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_14">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>60</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Post-Scale Y</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="PostScaleY">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>60</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="SensitivityCap">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>0</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="SensitivityCap_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>0</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>440</y>
+       <width>311</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QDoubleSpinBox" name="ScrollsPerTick_Cur">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>0</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_15">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Scrolls per Tick</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="ScrollsPerTick">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>0</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>999999999999999.000000000000000</double>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="PlotWidget" name="PlotCurve" native="true">
@@ -587,6 +1063,19 @@
       <width>531</width>
       <height>431</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Apply">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>550</y>
+      <width>131</width>
+      <height>44</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Apply</string>
     </property>
    </widget>
   </widget>
