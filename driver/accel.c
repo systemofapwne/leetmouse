@@ -195,7 +195,7 @@ kernel_fpu_begin();
     delta_whl *= g_ScrollsPerTick/3.0f;
     delta_x += carry_x;
     delta_y += carry_y;
-    if((delta_whl < 0 && carry_whl < 0) || (delta_whl > 0 && carry_whl > 0)) //Only apply carry to the wheel, if it shares the same sign
+    //if((delta_whl < 0 && carry_whl < 0) || (delta_whl > 0 && carry_whl > 0)) //Only apply carry to the wheel, if it shares the same sign
         delta_whl += carry_whl;
 
     //Last check for validity
