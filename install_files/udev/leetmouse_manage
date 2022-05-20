@@ -20,7 +20,7 @@ fi
 
 # Find all devices, which are currenlty bount to leetmouse and unbind them (+ rebind to usbhid)
 # Note: Only works, if the udev rules are disabled. This manage function is mainly used for the uninstall process
-if [ $1 == "unbind_all" ]; then
+if [ $1 = "unbind_all" ]; then
     # Temporarily disable binding via udev to leetmouse
     echo -ne "1" > /sys/module/leetmouse/parameters/no_bind
 
@@ -41,7 +41,7 @@ if [ $1 == "unbind_all" ]; then
 fi
 
 # Triggers a udev refresh so it binds all pointer devices to leetmouse
-if [ $1 == "bind_all" ]; then
+if [ $1 = "bind_all" ]; then
     udevadm control --reload-rules
     udevadm trigger --subsystem-match=usb --subsystem-match=input --subsystem-match=hid --attr-match=bInterfaceClass=03 --attr-match=bInterfaceSubClass=01 --attr-match=bInterfaceProtocol=02
 fi
