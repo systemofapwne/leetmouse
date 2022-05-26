@@ -9,14 +9,13 @@ pkgdesc="USB HID Boot Protocol mouse driver with acceleration."
 arch=('i686' 'x86_64')
 url="https://github.com/systemofapwne/leetmouse"
 license=('GPL2')
-#makedepends=('python-setuptools')
+makedepends=('linux-headers' 'cmake')
 source=("__SRC__")
 sha256sums=('__HASH__')
 
 # Currently we only supply the driver
 package_leetmouse-driver-dkms() {
   pkgdesc="Kernel driver for LEETMOUSE (DKMS-variant)"
-  makedepends=('linux-headers')
   depends=('dkms' 'udev')
   install=leetmouse-driver-dkms.install
 

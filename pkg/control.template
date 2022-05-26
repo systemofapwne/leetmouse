@@ -4,5 +4,5 @@ Maintainer: "Klaus Zipfel" <klaus (at) zipfel (dot) family>
 Description: USB HID Boot Protocol mouse driver with acceleration.
 Homepage: https://github.com/systemofapwne/leetmouse
 Architecture: all
-Build-Depends: build-essentials
+Build-Depends: build-essentials, 'cmake'
 Depends: dkms, udev
