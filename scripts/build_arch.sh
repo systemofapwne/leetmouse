@@ -11,7 +11,8 @@ SRC=$SRC_NAME.tar.xz
 # Create PKGBUILD for AUR and the bin package below for release via github
 if [ "$1" = "aur" ]; then
     SRC='https://github.com/systemofapwne/leetmouse/releases/download/v$pkgver/leetmouse-$pkgver.tar.xz'
-    echo $SRC
+    tmp=${SRC//'$pkgver'/$VERSION}
+    echo "Github release link: $tmp"
 fi
 
 # Clear the build folder from old releases
@@ -30,7 +31,7 @@ sed -i 's|'__SRC__'|'$SRC'|' "${ROOT}/pkg/build/PKGBUILD"
 # Copy "install" file to build
 cp -f "${ROOT}/pkg/leetmouse-driver-dkms.install" "${ROOT}/pkg/build/"
 
-# When we build the AUR package, we do not want to do the next steps
+# When we build the AUR PKGBUILD, we do not want to do the next steps
 if [ "$1" = "aur" ]; then
     exit
 fi
