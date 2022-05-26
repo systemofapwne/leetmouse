@@ -11,7 +11,7 @@
 
 //Needed for kernel_fpu_begin/end
 #include <linux/version.h>
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5,0,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
     //Pre Kernel 5.0.0
     #include <asm/i387.h>
 #else
