@@ -11,7 +11,7 @@ DRIVERDIR?=$(shell pwd)/driver
 MODULEDIR?=/lib/modules/$(shell uname -r)/kernel/drivers/usb
 
 DKMS_NAME?=leetmouse-driver
-DKMS_VER?=0.9.0
+DKMS_VER?=0.9.1
 
 
 .PHONY: driver
@@ -23,6 +23,7 @@ driver:
 	@echo -e "\n::\033[32m Compiling leetmouse kernel module\033[0m"
 	@echo "========================================"
 	cp -n $(DRIVERDIR)/config.sample.h $(DRIVERDIR)/config.h
+	cd $(DRIVERDIR) && $(MAKE) depend
 	$(MAKE) -C $(KERNELDIR) M=$(DRIVERDIR) modules
 
 
@@ -30,6 +31,7 @@ driver_clean:
 	@echo -e "\n::\033[32m Cleaning leetmouse kernel module\033[0m"
 	@echo "========================================"
 	$(MAKE) -C "$(KERNELDIR)" M="$(DRIVERDIR)" clean
+	cd $(DRIVERDIR) && $(MAKE) clean
 
 # Install kernel modules and then update module dependencies
 driver_install:

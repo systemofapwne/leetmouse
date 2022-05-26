@@ -3,10 +3,22 @@
   =LEETMOUSE= basically fuses the original [[https://github.com/torvalds/linux/blob/master/drivers/hid/usbhid/usbmouse.c][Linux USB mouse driver]] code with the acceleration code-base and has been initially developed by [[https://github.com/chilliams][Christopher Williams]].
   Since the [[https://github.com/chilliams/mousedriver][original work]] was in a rough state and seem to have been abandonned, this fork has been started.
 
-* Installation & Uninstallation
-** Preparation & Configuration
-   + Clone this repository, copy =driver/config.sample.h= to =/driver/config.h= and edit it in your favorite text editor. Change the defines at the top of config.h to match your desired acceleration settings.
+* Preparation & Configuration
+   + Clone this repository, fetch external dependencies, copy =driver/config.sample.h= to =driver/config.h= and edit it in your favorite text editor. Change the defines at the top of config.h to match your desired acceleration settings.
+     #+begin_src sh
+     git clone https://github.com/systemofapwne/leetmouse.git
+     cd leetmouse
+     git submodule init && git submodule update
+     cp driver/config.sample.h driver/config.h
+     #+end_src
    + Make sure, you have the required toolchains (e.g. =base-devel= on Arch or =build-essentials= on Debian) installed as well as the =linux-headers= for your installed kernel.
+     #+begin_src sh
+     # Arch/Manjaro/...
+     sudo pacman -S base-devel linux-headers
+     # Debian/Ubuntu/...
+     sudo apt update && sudo apt install build-essentials linux-headers
+     #+end_src
+* Installation & Uninstallation
 ** Arch/Manjaro
    Since the maintainer of =LEETMOUSE= is an Arch and Manjaro user, a =PKGBUILD= has been written for seamless integration into pacman.
 
@@ -28,7 +40,7 @@
 ** Other distros
    Other distributions' package-managers are not yet supported and thus need a manual installation. However Debian based systems are planned.
    The installation is not yet very polished but eventually will become so.
-   
+
    *Installation*
 
    Determine the current version of this module by examining the variable =DKMS_VER= in the =Makefile=. It can be e.g. 0.9.0
@@ -53,7 +65,7 @@
    #+end_src
    Unplug and replug your mouse or reboot to have your mice bound back to the generic usbhid.
 * Manual compile, insmod, bind
-   If you want to compile this module only for testing purposes or development, you do not need to install the whole package to your system
+   If you want to compile this module only for testing purposes or development, you do not need to install the whole package to your system.
 
    Compile the module, remove previously loaded modules and insert it.
    #+begin_src sh
@@ -65,7 +77,8 @@
    You can take a look at =/scripts/bind.sh= for an example on how to determine your mouse's USB address for that. However using the udev rules for development is advised.
 
 * TODOS
-  | GUI to configure the acceleration parameters                       | Current priority                                                   |
+  | Migration to Fixed-Point arihtmetic                                | Current priority                                                   |
+  | GUI to configure the acceleration parameters                       | Next priority                                                      |
   | AUR package release                                                | Once it reaches version 1.0 (basically after having a working GUI) |
   | dpkg package for Debian based systems                              | After AUR release                                                  |
   | Feature parity with Povohats driver and later even RawAccel        | When I find time - Definitely after aboves milestones              |
