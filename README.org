@@ -11,17 +11,15 @@
      git submodule init && git submodule update
      cp driver/config.sample.h driver/config.h
      #+end_src
-   + Make sure, you have the required toolchains (e.g. =base-devel= on Arch or =build-essentials= on Debian) installed as well as the =linux-headers= for your installed kernel.
+   + Make sure, you have =dkms=, =udev=, the required build toolchains (e.g. =base-devel= on Arch or =build-essentials= on Debian) and as well the =linux-headers= for your kernel installed.
      #+begin_src sh
      # Arch/Manjaro/...
-     sudo pacman -S base-devel linux-headers
+     sudo pacman -S dkms udev base-devel linux-headers
      # Debian/Ubuntu/...
-     sudo apt update && sudo apt install build-essentials linux-headers
+     sudo apt update && sudo apt install dkms udev build-essentials linux-headers-$(uname -r)
      #+end_src
 * Installation & Uninstallation
 ** Arch/Manjaro
-   Since the maintainer of =LEETMOUSE= is an Arch and Manjaro user, a =PKGBUILD= has been written for seamless integration into pacman.
-
    *Installation*
    #+begin_src sh
    # Create the PKGBUILD, copy associated files and run makepkg
@@ -36,13 +34,26 @@
    sudo pacman -R leetmouse-driver-dkms
    #+end_src
    All your mice should now be bound to the generic usbhid driver again.
-   
+** Debian/Ubuntu
+   *Installation*
+   #+begin_src sh
+   # Create the DEB package
+   ./scripts/build_deb.sh
+   # Run dpkg to install the package
+   sudo dpkg -i pkg/build/leetmouse*.deb
+   #+end_src
+   All your mice should now be bound to this driver. They will also automatically bind to it after a reboot. If this did not work, run =sudo /usr/lib/udev/leetmouse_manage bind_all=
+
+   *Uninstallation*
+   #+begin_src sh
+   sudo apt remove leetmouse
+   #+end_src
+   All your mice should now be bound to the generic usbhid driver again.
 ** Other distros
-   Other distributions' package-managers are not yet supported and thus need a manual installation. However Debian based systems are planned.
+   Other distributions' package-managers are not yet supported and thus need a manual installation. Feel free to contribute to an installation routine for your distro.
    The installation is not yet very polished but eventually will become so.
 
    *Installation*
-
    Determine the current version of this module by examining the variable =DKMS_VER= in the =Makefile=. It can be e.g. 0.9.0
    Run the following commands to build and install the kernel module
    #+begin_src sh
@@ -54,13 +65,12 @@
    If this still does not work, there is a major problem
    
    *Uninstallation*
-   
    You again need to know then =version= as described above for the installation
    #+begin_src sh
    # Unbind all mice from the driver
    sudo /usr/lib/udev/leetmouse_manage unbind_all
    # Uninstall the driver
-   sudo dkms remove -m leetmouse-driver -v 0.9.0
+   sudo dkms remove -m leetmouse-driver -v 0.9.0 --all  # Enter the version you determined from the Makefile earlier in here
    sudo make remove_dkms && sudo make udev_uninstall
    #+end_src
    Unplug and replug your mouse or reboot to have your mice bound back to the generic usbhid.
@@ -80,11 +90,11 @@
   | Migration to Fixed-Point arihtmetic                                | Current priority                                                   |
   | GUI to configure the acceleration parameters                       | Next priority                                                      |
   | AUR package release                                                | Once it reaches version 1.0 (basically after having a working GUI) |
-  | dpkg package for Debian based systems                              | After AUR release                                                  |
   | Feature parity with Povohats driver and later even RawAccel        | When I find time - Definitely after aboves milestones              |
   | External interface for dynamically pushing acceleration parameters | Done                                                               |
   | Fixing the only [[https://github.com/systemofapwne/mousedriver/issues/2][vertical srolling bug]]                              | Done                                                               |
   | Easier installation & binding                                      | Done                                                               |
   | DKMS support                                                       | Done                                                               |
   | PKGBUILD for Arch based systems                                    | Done                                                               |
+  | dpkg package for Debian based systems                              | Done                                                               |
   

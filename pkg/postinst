@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Build dkms module
+dkms add -m leetmouse-driver -v __VERSION__
+dkms build -m leetmouse-driver -v __VERSION__ && dkms install -m leetmouse-driver -v __VERSION__ || true

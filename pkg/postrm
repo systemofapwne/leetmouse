@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Unload the kernel module from memory
+rmmod leetmouse || true

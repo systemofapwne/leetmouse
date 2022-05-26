@@ -16,6 +16,7 @@ sha256sums=('__HASH__')
 # Currently we only supply the driver
 package_leetmouse-driver-dkms() {
   pkgdesc="Kernel driver for LEETMOUSE (DKMS-variant)"
+  makedepends=('linux-headers')
   depends=('dkms' 'udev')
   install=leetmouse-driver-dkms.install
 

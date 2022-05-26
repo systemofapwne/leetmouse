@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Unbind all currently bound mice from leetmouse and rebind them to usbhid
+/usr/lib/udev/leetmouse_manage unbind_all || true
+
+# Remove dkms module
+dkms remove -m leetmouse-driver -v __VERSION__ --all
