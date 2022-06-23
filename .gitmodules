@@ -1,5 +1,3 @@
 [submodule "driver/libfixmath"]
 	path = driver/libfixmath
-	url = https://github.com/systemofapwne/libfixmath.git
-[submodule "driver/libfixmath/"]
-	url = https://github.com/systemofapwne/libfixmath.git
+	url = https://github.com/PetteriAimonen/libfixmath.git
