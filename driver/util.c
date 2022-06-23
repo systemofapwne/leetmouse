@@ -27,13 +27,6 @@ struct parser_context {
     entry.size = _size;                             \
     entry.sgn = _sign;
 
-#define NUM_CONTEXTS 32                             // This should be more than enough for a HID mouse. If we exceed this number, the parser below will eventually fail
-#define SET_ENTRY(entry, _id, _offset, _size, _sign) \
-    entry.id = _id;                                 \
-    entry.offset = _offset;                         \
-    entry.size = _size;                             \
-    entry.sgn = _sign;
-
 int parse_report_desc(unsigned char *buffer, int buffer_len, struct report_positions *pos)
 {
     int r_count = 0, r_size = 0, r_sgn = 0, len = 0;
