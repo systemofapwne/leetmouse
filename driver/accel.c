@@ -163,6 +163,11 @@ kernel_fpu_begin();
     rate = delta_x * delta_x + delta_y * delta_y;
     B_sqrt(&rate);
 
+    //Calculate rate from travelled overall distance and add possible rate offsets - needs to be first
+    rate /= ms;
+    rate -= g_Offset;
+	
+	
     //Apply speedcap
     if(g_SpeedCap != 0){
         if (rate >= g_SpeedCap) {
@@ -172,10 +177,7 @@ kernel_fpu_begin();
         }
     }
 
-    //Calculate rate from travelled overall distance and add possible rate offsets
-    rate /= ms;
-    rate -= g_Offset;
-
+    
     //TODO: Add different acceleration styles
     //Apply linear acceleration on the sensitivity if applicable and limit maximum value
     if(rate > 0){
