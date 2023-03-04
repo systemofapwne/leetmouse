@@ -1,6 +1,7 @@
+#include "fixedptc.h"
 // Maximum number of packets allowed to be sent from the mouse at once. Linux's default value is 8, which at
 // least causes EOVERFLOW for my mouse (SteelSeries Rival 600). Increase this, if 'dmesg -w' tells you to!
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 8
 
 /*
  * This should be your desired acceleration. It needs to end with an f.
@@ -9,22 +10,22 @@
  */
 
 // Changes behaviour of the scroll-wheel. Default is 3.0f
-#define SCROLLS_PER_TICK 5.0f
+#define SCROLLS_PER_TICK fixedpt_rconst(3.0)
 
 // Emulate Windows' "Enhanced Pointer Precision" for my mouse (1000 Hz) by approximating it with a linear accel
-#define SENSITIVITY 0.85f
-#define ACCELERATION 0.26f
-#define SENS_CAP 4.0f
-#define OFFSET 0.0f
-#define POST_SCALE_X 0.4f
-#define POST_SCALE_Y 0.4f
-#define SPEED_CAP 0.0f
+#define SENSITIVITY fixedpt_rconst(1.0)
+#define ACCELERATION fixedpt_rconst(0.05)
+#define SENS_CAP fixedpt_rconst(3.0)
+#define OFFSET fixedpt_rconst(0.0)
+#define POST_SCALE_X fixedpt_rconst(1.0)
+#define POST_SCALE_Y fixedpt_rconst(1.0)
+#define SPEED_CAP fixedpt_rconst(0.0)
 
 // Prescaler for different DPI values. 1.0f at 400 DPI. To adjust it for <your_DPI>, calculate 400/your_DPI
 
 // Generic @ 400 DPI
-#define PRE_SCALE_X 1.0f
-#define PRE_SCALE_Y 1.0f
+#define PRE_SCALE_X fixedpt_rconst(1.0)
+#define PRE_SCALE_Y fixedpt_rconst(1.0)
 
 // Steelseries Rival 110 @ 7200 DPI
 //#define PRE_SCALE_X 0.0555555f
