@@ -22,11 +22,15 @@
 MODULE_AUTHOR("Christopher Williams <chilliams (at) gmail (dot) com>"); //Original idea of this module
 MODULE_AUTHOR("Klaus Zipfel <klaus (at) zipfel (dot) family>");         //Current maintainer
 
-//Convenient helper for float based parameters, which are passed via a string to this module (must be individually parsed via atof() - available in util.c)
+//Converts a preprocessor define's value in "config.h" to a string - Suspect this to change in future version without a "config.h"
+#define _s(x) #x
+#define s(x) _s(x)
+
+//Convenient helper for fixed point parameters, which are passed via a string to this module (must be individually parsed via atof() - available in util.c)
 //TODO: Add parameter default value to string conversion
 #define PARAM_F(param, default, desc)              \
     fixedpt g_##param = default;                                \
-    static char* g_param_##param = "";                 \
+    static char* g_param_##param = s(default);                  \
     module_param_named(param, g_param_##param, charp, 0644);    \
     MODULE_PARM_DESC(param, desc);
 
@@ -91,7 +95,7 @@ INLINE void update_params(ktime_t now)
 // ########## Acceleration code
 
 // Acceleration happens here
-int accelerate(int *x, int *y, int *wheel)
+void accelerate(int *x, int *y, int *wheel)
 {
     fixedpt delta_x, delta_y, delta_whl, ms, rate, accel_sens;
     static fixedpt carry_x = fixedpt_rconst(0.0);
@@ -100,7 +104,6 @@ int accelerate(int *x, int *y, int *wheel)
     static fixedpt last_ms = fixedpt_rconst(1.0);
     static ktime_t last;
     ktime_t now;
-    int status = 0;
 
     accel_sens = g_Sensitivity;
 
@@ -170,6 +173,4 @@ int accelerate(int *x, int *y, int *wheel)
     carry_x = fixedpt_sub(delta_x, fixedpt_fromint(*x));
     carry_y = fixedpt_sub(delta_y, fixedpt_fromint(*y));
     carry_whl = fixedpt_sub(delta_whl, fixedpt_fromint(*wheel));
-
-    return status;
 }
