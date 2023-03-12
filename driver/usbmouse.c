@@ -89,11 +89,10 @@ static void usb_mouse_irq(struct urb *urb)
         input_report_key(dev, BTN_MIDDLE, btn & 0x04);
         input_report_key(dev, BTN_SIDE,   btn & 0x08);
         input_report_key(dev, BTN_EXTRA,  btn & 0x10);
-        if(!accelerate(&x,&y,&wheel)){
-            input_report_rel(dev, REL_X,     x);
-            input_report_rel(dev, REL_Y,     y);
-            input_report_rel(dev, REL_WHEEL, wheel);
-        }
+        accelerate(&x,&y,&wheel);
+        input_report_rel(dev, REL_X,     x);
+        input_report_rel(dev, REL_Y,     y);
+        input_report_rel(dev, REL_WHEEL, wheel);
     }
                                                                 //Leetmouse Mod END
 
