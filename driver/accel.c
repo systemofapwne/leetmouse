@@ -8,6 +8,8 @@
 #include <linux/time.h>
 #include <linux/string.h>   //strlen
 #include <linux/init.h>
+#define FIXMATH_NO_OVERFLOW
+#define FIXMATH_NO_ROUNDING
 #include "libfixmath/libfixmath/fixmath.h"
 
 //Needed for kernel_fpu_begin/end
