@@ -20,6 +20,7 @@ struct parser_context {
     unsigned int offset;                        // Local offset in this report ID context
 };
 
+#define NUM_USAGES 16
 #define NUM_CONTEXTS 32                             // This should be more than enough for a HID mouse. If we exceed this number, the parser below will eventually fail
 #define SET_ENTRY(entry, _id, _offset, _size, _sign) \
     entry.id = _id;                                 \
@@ -30,7 +31,7 @@ struct parser_context {
 int parse_report_desc(unsigned char *buffer, int buffer_len, struct report_positions *pos)
 {
     int r_count = 0, r_size = 0, r_sgn = 0, len = 0;
-    int r_usage[16];
+    int r_usage[NUM_USAGES];
     unsigned char ctl, button = 0;
     unsigned char *data;
 
@@ -41,7 +42,7 @@ int parse_report_desc(unsigned char *buffer, int buffer_len, struct report_posit
     struct parser_context contexts[NUM_CONTEXTS];    // We allow up to NUM_CONTEXTS different parsing contexts. Any further will be ignored.
     struct parser_context *c = contexts;             // The current context
 
-    for(n = 0; n < ARRAY_SIZE(r_usage); n++){
+    for(n = 0; n < NUM_USAGES; n++){
         r_usage[n] = 0;
     }
     
@@ -61,7 +62,14 @@ int parse_report_desc(unsigned char *buffer, int buffer_len, struct report_posit
         // ######## Global items
         //Determine the size
         if(ctl == D_REPORT_SIZE)  r_size = (int) data[0];
-        if(ctl == D_REPORT_COUNT) r_count = (int) data[0];
+        if(ctl == D_REPORT_COUNT){
+            r_count = (int) data[0];
+
+            if (r_count > NUM_USAGES){
+                printk("LEETMOUSE: parse_report_desc r_count > NUM_USAGES (%d). Should only happen on first probe.", NUM_USAGES);
+                return -1;
+            }
+        }
 
         //Switch context, if a "Report ID" control word has been found.
         if(ctl == D_REPORT_ID){
@@ -113,7 +121,7 @@ int parse_report_desc(unsigned char *buffer, int buffer_len, struct report_posit
                 data[0] == D_USAGE_X ||
                 data[0] == D_USAGE_Y
             ) {
-                for(n = 0; n < ARRAY_SIZE(r_usage); n++){
+                for(n = 0; n < NUM_USAGES; n++){
                     if(!r_usage[n]){
                         r_usage[n] = (int) data[0];
                         break;
@@ -147,7 +155,7 @@ int parse_report_desc(unsigned char *buffer, int buffer_len, struct report_posit
                 }
             }
             //Reset usages
-            for(n = 0; n < ARRAY_SIZE(r_usage); n++){
+            for(n = 0; n < NUM_USAGES; n++){
                 r_usage[n] = 0;
             }
             //Increment offset
