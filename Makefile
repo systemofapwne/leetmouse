@@ -11,7 +11,7 @@ DRIVERDIR?=$(shell pwd)/driver
 MODULEDIR?=/lib/modules/$(shell uname -r)/kernel/drivers/usb
 
 DKMS_NAME?=leetmouse-driver
-DKMS_VER?=0.9.1
+DKMS_VER?=0.9.5
 
 SRC=$(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)
 LIB=$(DESTDIR)/usr/lib
