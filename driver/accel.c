@@ -115,7 +115,8 @@ void accelerate(int *x, int *y, int *wheel)
     now = ktime_get();
     ms = fixedpt_div(fixedpt_fromint(now - last), fixedpt_fromint(1000*1000));
     last = now;
-    if(ms < fixedpt_rconst(1.0)) ms = last_ms;        //Sometimes, urbs appear bunched -> Beyond µs resolution so the timing reading is plain wrong. Fallback to last known valid frametime
+    // The condition below had to be changed from 1.0 -> 0.125 to make 4000 hz polling rate work. This should probably work up to 8000 hz.
+    if(ms < fixedpt_rconst(0.125)) ms = last_ms;        //Sometimes, urbs appear bunched -> Beyond µs resolution so the timing reading is plain wrong. Fallback to last known valid frametime
     if(ms > fixedpt_rconst(100.0)) ms = fixedpt_rconst(100.0);    //Original InterAccel has 200 here. RawAccel rounds to 100. So do we.
     last_ms = ms;
 
