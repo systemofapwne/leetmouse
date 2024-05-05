@@ -9,15 +9,7 @@
 #include <linux/string.h>   //strlen
 #include <linux/init.h>
 #include "fixedptc.h"
-
-//Needed for kernel_fpu_begin/end
 #include <linux/version.h>
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
-    //Pre Kernel 5.0.0
-    #include <asm/i387.h>
-#else
-    #include <asm/fpu/api.h>
-#endif
 
 MODULE_AUTHOR("Christopher Williams <chilliams (at) gmail (dot) com>"); //Original idea of this module
 MODULE_AUTHOR("Klaus Zipfel <klaus (at) zipfel (dot) family>");         //Current maintainer
@@ -43,22 +35,22 @@ MODULE_AUTHOR("Klaus Zipfel <klaus (at) zipfel (dot) family>");         //Curren
 
 // Simple module parameters (instant update)
 PARAM(no_bind,          0,              "This will disable binding to this driver via 'leetmouse_bind' by udev.");
-PARAM(update,           0,              "Triggers an update of the acceleration parameters below");
+PARAM(update,           1,              "Triggers an update of the acceleration parameters below"); // Set this to one, so that update_params gets triggered once and rotation values get precalculated
 
 //PARAM(AccelMode,        MODE,           "Acceleration method: 0 power law, 1: saturation, 2: log"); //Not yet implemented
 
 // Acceleration parameters (type pchar. Converted to float via "updata_params" triggered by /sys/module/leetmouse/parameters/update)
-PARAM_F(PreScaleX,      PRE_SCALE_X,    "Prescale X-Axis before applying acceleration.");
-PARAM_F(PreScaleY,      PRE_SCALE_Y,    "Prescale Y-Axis before applying acceleration.");
-PARAM_F(SpeedCap,       SPEED_CAP,      "Limit the maximum pointer speed before applying acceleration.");
-PARAM_F(Sensitivity,    SENSITIVITY,    "Mouse base sensitivity.");
-PARAM_F(Acceleration,   ACCELERATION,   "Mouse acceleration sensitivity.");
-PARAM_F(SensitivityCap, SENS_CAP,       "Cap maximum sensitivity.");
-PARAM_F(Offset,         OFFSET,         "Mouse base sensitivity.");
-//PARAM_F(Power,          XXX,            "");           //Not yet implemented
-PARAM_F(PostScaleX,     POST_SCALE_X,   "Postscale X-Axis after applying acceleration.");
-PARAM_F(PostScaleY,     POST_SCALE_Y,   "Postscale Y-Axis after applying acceleration.");
-//PARAM_F(AngleAdjustment,XXX,            "");           //Not yet implemented. Doubtful, if I will ever add it - Not very useful and needs me to implement trigonometric functions from scratch in C.
+PARAM_F(PreScaleX,      PRE_SCALE_X,      "Prescale X-Axis before applying acceleration.");
+PARAM_F(PreScaleY,      PRE_SCALE_Y,      "Prescale Y-Axis before applying acceleration.");
+PARAM_F(SpeedCap,       SPEED_CAP,        "Limit the maximum pointer speed before applying acceleration.");
+PARAM_F(Sensitivity,    SENSITIVITY,      "Mouse base sensitivity.");
+PARAM_F(Acceleration,   ACCELERATION,     "Mouse acceleration sensitivity.");
+PARAM_F(SensitivityCap, SENS_CAP,         "Cap maximum sensitivity.");
+PARAM_F(Offset,         OFFSET,           "Mouse base sensitivity.");
+//PARAM_F(Power,          XXX,              "");           //Not yet implemented
+PARAM_F(PostScaleX,     POST_SCALE_X,     "Postscale X-Axis after applying acceleration.");
+PARAM_F(PostScaleY,     POST_SCALE_Y,     "Postscale Y-Axis after applying acceleration.");
+PARAM_F(RotationAngle,  ROTATION_ANGLE,  "Rotate mouse input (angle in radians).");
 //PARAM_F(AngleSnapping,  XXX,            "");           //Not yet implemented. Doubtful, if I will ever add it - Not very useful and needs me to implement trigonometric functions from scratch in C.
 PARAM_F(ScrollsPerTick, SCROLLS_PER_TICK, "Amount of lines to scroll per scroll-wheel tick.");
 
@@ -72,11 +64,14 @@ void update_param(const char *str, fixedpt *result) {
 // Second, to fight possible cheating. However, this can be OFC changed, since we are OSS...
 #define PARAM_UPDATE(param) update_param(g_param_##param, &g_##param);
 
+// Precalculated rotation sine and cosine. These will need to be updated with RotationAngle if parameter updating is implemented.
+static fixedpt g_RotationSine = 0, g_RotationCosine = 0;
 static ktime_t g_next_update = 0;
 INLINE void update_params(ktime_t now)
 {
     if(!g_update) return;
     if(now < g_next_update) return;
+    
     g_update = 0;
     g_next_update = now + 1000000000ll;    //Next update is allowed after 1s of delay
 
@@ -89,7 +84,11 @@ INLINE void update_params(ktime_t now)
     PARAM_UPDATE(Offset);
     PARAM_UPDATE(PostScaleX);
     PARAM_UPDATE(PostScaleY);
+    PARAM_UPDATE(RotationAngle);
     PARAM_UPDATE(ScrollsPerTick);
+
+    if (g_RotationSine == 0) g_RotationSine = fixedpt_sin(g_RotationAngle);
+    if (g_RotationCosine == 0) g_RotationCosine = fixedpt_cos(g_RotationAngle);
 }
 
 // ########## Acceleration code
@@ -103,6 +102,7 @@ void accelerate(int *x, int *y, int *wheel)
     static fixedpt carry_whl = fixedpt_rconst(0.0);
     static fixedpt last_ms = fixedpt_rconst(1.0);
     static ktime_t last;
+    // static char fixedpt_dbg_str[20] = {0};
     ktime_t now;
 
     accel_sens = g_Sensitivity;
@@ -115,9 +115,11 @@ void accelerate(int *x, int *y, int *wheel)
     now = ktime_get();
     ms = fixedpt_div(fixedpt_fromint(now - last), fixedpt_fromint(1000*1000));
     last = now;
+    // Try to correct overflows from large timestamp differences that don't fit in fixedpoint numbers
+    if (ms < fixedpt_fromint(0.0)) ms = fixedpt_div(fixedpt_fromint((now - last) / 1000), fixedpt_fromint(1000));
     // The condition below had to be changed from 1.0 -> 0.125 to make 4000 hz polling rate work. This should probably work up to 8000 hz.
-    if(ms < fixedpt_rconst(0.125)) ms = last_ms;        //Sometimes, urbs appear bunched -> Beyond µs resolution so the timing reading is plain wrong. Fallback to last known valid frametime
-    if(ms > fixedpt_rconst(100.0)) ms = fixedpt_rconst(100.0);    //Original InterAccel has 200 here. RawAccel rounds to 100. So do we.
+    if (ms < fixedpt_rconst(0.125)) ms = last_ms;        //Sometimes, urbs appear bunched -> Beyond µs resolution so the timing reading is plain wrong. Fallback to last known valid frametime
+    if (ms > fixedpt_fromint(100)) ms = fixedpt_rconst(100);    //Original InterAccel has 200 here. RawAccel rounds to 100. So do we.
     last_ms = ms;
 
     //Update acceleration parameters periodically
@@ -165,6 +167,33 @@ void accelerate(int *x, int *y, int *wheel)
     delta_y = fixedpt_add(delta_y, carry_y); 
     if((delta_whl < 0 && carry_whl < 0) || (delta_whl > 0 && carry_whl > 0)) //Only apply carry to the wheel, if it shares the same sign
         delta_whl += carry_whl;
+
+    /*memset(fixedpt_dbg_str, 0, sizeof fixedpt_dbg_str);
+    fixedpt_str(delta_x, fixedpt_dbg_str, -2);
+    printk("X before rotation: %s", fixedpt_dbg_str);
+    memset(fixedpt_dbg_str, 0, sizeof fixedpt_dbg_str);
+    fixedpt_str(delta_y, fixedpt_dbg_str, -2);
+    printk("Y before rotation: %s", fixedpt_dbg_str);*/
+    // Apply rotation
+    if (g_RotationAngle != 0) {
+        /*memset(fixedpt_dbg_str, 0, sizeof fixedpt_dbg_str);
+        fixedpt_str(g_RotationAngle, fixedpt_dbg_str, -2);
+        printk("Rotating by %s radians", fixedpt_dbg_str);*/
+        delta_x = fixedpt_sub(
+            fixedpt_mul(delta_x, g_RotationCosine),
+            fixedpt_mul(delta_y, g_RotationSine)
+        );
+        delta_y = fixedpt_add(
+            fixedpt_mul(delta_x, g_RotationSine),
+            fixedpt_mul(delta_y, g_RotationCosine)
+        );
+    }
+    /*memset(fixedpt_dbg_str, 0, sizeof fixedpt_dbg_str);
+    fixedpt_str(delta_x, fixedpt_dbg_str, -2);
+    printk("X after rotation: %s", fixedpt_dbg_str);
+    memset(fixedpt_dbg_str, 0, sizeof fixedpt_dbg_str);
+    fixedpt_str(delta_y, fixedpt_dbg_str, -2);
+    printk("Y after rotation: %s", fixedpt_dbg_str);*/
 
     *x = fixedpt_toint(delta_x);
     *y = fixedpt_toint(delta_y);
