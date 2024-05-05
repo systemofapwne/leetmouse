@@ -12,13 +12,14 @@
 // Changes behaviour of the scroll-wheel. Default is 3.0f
 #define SCROLLS_PER_TICK fixedpt_rconst(3.0)
 
-// Emulate Windows' "Enhanced Pointer Precision" for my mouse (1000 Hz) by approximating it with a linear accel
 #define SENSITIVITY fixedpt_rconst(1.0)
-#define ACCELERATION fixedpt_rconst(0.05)
+#define ACCELERATION fixedpt_rconst(0.04)
 #define SENS_CAP fixedpt_rconst(3.0)
 #define OFFSET fixedpt_rconst(0.0)
 #define POST_SCALE_X fixedpt_rconst(1.0)
 #define POST_SCALE_Y fixedpt_rconst(1.0)
+// Sensor rotation correction in radians (current value rotates mouse movement about 7.2 degrees to the right)
+#define ROTATION_ANGLE fixedpt_rconst(-0.125) 
 #define SPEED_CAP fixedpt_rconst(0.0)
 
 // Prescaler for different DPI values. 1.0f at 400 DPI. To adjust it for <your_DPI>, calculate 400/your_DPI
