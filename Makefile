@@ -11,10 +11,8 @@ DRIVERDIR?=$(shell pwd)/driver
 MODULEDIR?=/lib/modules/$(shell uname -r)/kernel/drivers/usb
 
 DKMS_NAME?=leetmouse-driver
-DKMS_VER?=0.9.5
+DKMS_VER?=0.9.0
 
-SRC=$(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)
-LIB=$(DESTDIR)/usr/lib
 
 .PHONY: driver
 
@@ -25,7 +23,6 @@ driver:
 	@echo -e "\n::\033[32m Compiling leetmouse kernel module\033[0m"
 	@echo "========================================"
 	cp -n $(DRIVERDIR)/config.sample.h $(DRIVERDIR)/config.h
-	cd $(DRIVERDIR) && $(MAKE) depend
 	$(MAKE) -C $(KERNELDIR) M=$(DRIVERDIR) modules
 
 
@@ -33,7 +30,6 @@ driver_clean:
 	@echo -e "\n::\033[32m Cleaning leetmouse kernel module\033[0m"
 	@echo "========================================"
 	$(MAKE) -C "$(KERNELDIR)" M="$(DRIVERDIR)" clean
-	cd $(DRIVERDIR) && $(MAKE) clean
 
 # Install kernel modules and then update module dependencies
 driver_install:
@@ -52,29 +48,13 @@ driver_uninstall:
 setup_dkms:
 	@echo -e "\n::\033[34m Installing DKMS files\033[0m"
 	@echo "====================================================="
-	install -m 644 -v -D Makefile 						$(SRC)/Makefile
-	install -m 644 -v -D install_files/dkms/dkms.conf 	$(SRC)/dkms.conf
-
-	install -m 755 -v -d driver 						$(SRC)/driver
-	install -m 644 -v -D driver/Makefile 				$(SRC)/driver/Makefile
-	install -m 644 -v driver/*.c 						$(SRC)/driver/
-	install -m 644 -v driver/*.h 						$(SRC)/driver/
-	rm -fv 												$(SRC)/driver/*.mod.c
-
-	install -m 755 -v -d driver/libfixmath 				$(SRC)/driver/libfixmath
-	install -m 644 -v -D driver/libfixmath/CMakeLists.txt $(SRC)/driver/libfixmath/CMakeLists.txt
-
-	install -m 755 -v -d driver/libfixmath/tests 		$(SRC)/driver/libfixmath/tests
-	install -m 644 -v -D driver/libfixmath/tests/* 		$(SRC)/driver/libfixmath/tests/
-
-	install -m 755 -v -d driver/libfixmath/fixsingen 	$(SRC)/driver/libfixmath/fixsingen
-	install -m 644 -v -D driver/libfixmath/fixsingen/* 	$(SRC)/driver/libfixmath/fixsingen/
-
-	install -m 755 -v -d driver/libfixmath/fixtest 		$(SRC)/driver/libfixmath/fixtest
-	install -m 644 -v -D driver/libfixmath/fixtest/* 	$(SRC)/driver/libfixmath/fixtest/
-
-	install -m 755 -v -d driver/libfixmath/libfixmath 	$(SRC)/driver/libfixmath/libfixmath
-	install -m 644 -v -D driver/libfixmath/libfixmath/* $(SRC)/driver/libfixmath/libfixmath/
+	install -m 644 -v -D Makefile $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/Makefile
+	install -m 644 -v -D install_files/dkms/dkms.conf $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/dkms.conf
+	install -m 755 -v -d driver $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver
+	install -m 644 -v -D driver/Makefile $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/Makefile
+	install -m 644 -v driver/*.c $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/
+	install -m 644 -v driver/*.h $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/
+	rm -fv $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/*.mod.c
 
 remove_dkms:
 	@echo -e "\n::\033[34m Removing DKMS files\033[0m"
@@ -84,9 +64,9 @@ remove_dkms:
 udev_install:
 	@echo -e "\n::\033[34m Installing leetmouse udev rules\033[0m"
 	@echo "====================================================="
-	install -m 644 -v -D install_files/udev/99-leetmouse.rules 	$(LIB)/udev/rules.d/99-leetmouse.rules
-	install -m 755 -v -D install_files/udev/leetmouse_bind 		$(LIB)/udev/leetmouse_bind
-	install -m 755 -v -D install_files/udev/leetmouse_manage 	$(LIB)/udev/leetmouse_manage
+	install -m 644 -v -D install_files/udev/99-leetmouse.rules $(DESTDIR)/usr/lib/udev/rules.d/99-leetmouse.rules
+	install -m 755 -v -D install_files/udev/leetmouse_bind $(DESTDIR)/usr/lib/udev/leetmouse_bind
+	install -m 755 -v -D install_files/udev/leetmouse_manage $(DESTDIR)/usr/lib/udev/leetmouse_manage
 
 udev_trigger:
 	@echo -e "\n::\033[34m Triggering new udev rules\033[0m"
@@ -97,10 +77,10 @@ udev_trigger:
 udev_uninstall:
 	@echo -e "\n::\033[34m Uninstalling leetmouse udev rules\033[0m"
 	@echo "====================================================="
-	rm -f $(DESTDIR)/usr/lib/udev/rules.d/99-leetmouse.rules $(LIB)/udev/leetmouse_bind $(LIB)/udev/leetmouse_manage
+	rm -f $(DESTDIR)/usr/lib/udev/rules.d/99-leetmouse.rules $(DESTDIR)/usr/lib/udev/leetmouse_bind $(DESTDIR)/usr/lib/udev/leetmouse_manage
 	udevadm control --reload-rules
-	. $(LIB)/udev/leetmouse_manage unbind_all
-	rm -f $(LIB)/udev/leetmouse_manage
+	. $(DESTDIR)/usr/lib/udev/leetmouse_manage unbind_all
+	rm -f $(DESTDIR)/usr/lib/udev/leetmouse_manage
 
 install_i_know_what_i_am_doing: all driver_install udev_install udev_trigger
 install: manual_install_msg ;
