@@ -22,7 +22,7 @@ clean: driver_clean
 driver:
 	@echo -e "\n::\033[32m Compiling leetmouse kernel module\033[0m"
 	@echo "========================================"
-	cp -n $(DRIVERDIR)/config.sample.h $(DRIVERDIR)/config.h
+	@cp -n $(DRIVERDIR)/config.sample.h $(DRIVERDIR)/config.h || true
 	$(MAKE) -C $(KERNELDIR) M=$(DRIVERDIR) modules
 
 
@@ -54,12 +54,12 @@ setup_dkms:
 	install -m 644 -v -D driver/Makefile $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/Makefile
 	install -m 644 -v driver/*.c $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/
 	install -m 644 -v driver/*.h $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/
-	rm -fv $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/*.mod.c
+	@rm -fv $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)/driver/*.mod.c
 
 remove_dkms:
 	@echo -e "\n::\033[34m Removing DKMS files\033[0m"
 	@echo "====================================================="
-	rm -rf $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)
+	@rm -rf $(DESTDIR)/usr/src/$(DKMS_NAME)-$(DKMS_VER)
 
 udev_install:
 	@echo -e "\n::\033[34m Installing leetmouse udev rules\033[0m"
@@ -77,10 +77,10 @@ udev_trigger:
 udev_uninstall:
 	@echo -e "\n::\033[34m Uninstalling leetmouse udev rules\033[0m"
 	@echo "====================================================="
-	rm -f $(DESTDIR)/usr/lib/udev/rules.d/99-leetmouse.rules $(DESTDIR)/usr/lib/udev/leetmouse_bind $(DESTDIR)/usr/lib/udev/leetmouse_manage
+	@rm -f $(DESTDIR)/usr/lib/udev/rules.d/99-leetmouse.rules $(DESTDIR)/usr/lib/udev/leetmouse_bind $(DESTDIR)/usr/lib/udev/leetmouse_manage
 	udevadm control --reload-rules
 	. $(DESTDIR)/usr/lib/udev/leetmouse_manage unbind_all
-	rm -f $(DESTDIR)/usr/lib/udev/leetmouse_manage
+	@rm -f $(DESTDIR)/usr/lib/udev/leetmouse_manage
 
 install_i_know_what_i_am_doing: all driver_install udev_install udev_trigger
 install: manual_install_msg ;
