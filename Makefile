@@ -35,6 +35,7 @@ driver_clean:
 driver_install:
 	@echo -e "\n::\033[34m Installing leetmouse kernel module\033[0m"
 	@echo "====================================================="
+	@mkdir -p $(DESTDIR)/$(MODULEDIR)
 	@cp -v $(DRIVERDIR)/*.ko $(DESTDIR)/$(MODULEDIR)
 	@chown -v root:root $(DESTDIR)/$(MODULEDIR)/*.ko
 	depmod
