@@ -85,6 +85,12 @@ udev_uninstall:
 install_i_know_what_i_am_doing: all driver_install udev_install udev_trigger
 install: manual_install_msg ;
 
+package:
+	@echo -e "\n::\033[34m Building installable package\033[0m"
+	@echo "====================================================="
+	@./scripts/build_arch.sh
+	@mv ./pkg/build/leetmouse*.zst .
+	
 manual_install_msg:
 	@echo "Please do not install the driver using this method. Use a distribution package as it tracks the files installed and can remove them afterwards. If you are 100% sure, you want to do this, find the correct target in the Makefile."
 	@echo "Exiting."
