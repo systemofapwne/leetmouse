@@ -191,7 +191,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
     if (!mouse || !input_dev)
         goto fail1;
     
-    mouse->data = usb_alloc_coherent(dev, BUFFER_SIZE, GFP_ATOMIC, &mouse->data_dma); //Leetmouse Mod
+    mouse->data = usb_alloc_coherent(dev, BUFFER_SIZE, GFP_KERNEL, &mouse->data_dma); //Leetmouse Mod
     if (!mouse->data)
         goto fail1;
 
