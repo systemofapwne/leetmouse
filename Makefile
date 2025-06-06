@@ -77,7 +77,7 @@ udev_trigger:
 udev_uninstall:
 	@echo -e "\n::\033[34m Uninstalling leetmouse udev rules\033[0m"
 	@echo "====================================================="
-	@rm -f $(DESTDIR)/usr/lib/udev/rules.d/99-leetmouse.rules $(DESTDIR)/usr/lib/udev/leetmouse_bind $(DESTDIR)/usr/lib/udev/leetmouse_manage
+	@rm -f $(DESTDIR)/usr/lib/udev/rules.d/99-leetmouse.rules $(DESTDIR)/usr/lib/udev/leetmouse_bind
 	udevadm control --reload-rules
 	. $(DESTDIR)/usr/lib/udev/leetmouse_manage unbind_all
 	@rm -f $(DESTDIR)/usr/lib/udev/leetmouse_manage
