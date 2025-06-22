@@ -167,7 +167,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
     int num_descriptors;
     char *rdesc;
     unsigned int n = 0;
-		#if LINUX_VERSION_CODE < KERNEL_VERSION(6,16,0)
+		#if LINUX_VERSION_CODE < KERNEL_VERSION(6,15,3)
     size_t offset = offsetof(struct hid_descriptor, desc);
 		#else
     size_t offset = offsetof(struct hid_descriptor, rpt_desc);
@@ -185,9 +185,9 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 
     pipe = usb_rcvintpipe(dev, endpoint->bEndpointAddress);
     #if LINUX_VERSION_CODE < KERNEL_VERSION(5,19,0)
-        maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
+    maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
     #else
-        maxp = usb_maxpacket(dev, pipe);
+    maxp = usb_maxpacket(dev, pipe);
     #endif
 
     mouse = kzalloc(sizeof(struct usb_mouse), GFP_KERNEL);
@@ -218,7 +218,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
            (hdesc->bLength - offset) / sizeof(struct hid_class_descriptor));
 
     for (n = 0; n < num_descriptors; n++) {
-				#if LINUX_VERSION_CODE < KERNEL_VERSION(6,16,0)
+				#if LINUX_VERSION_CODE < KERNEL_VERSION(6,15,3)
 				const struct hid_class_descriptor *desc = &hdesc->desc[n];
 				#else
 				const struct hid_class_descriptor *desc = n == 0 ? &hdesc->rpt_desc : &hdesc->opt_descs[n - 1];
