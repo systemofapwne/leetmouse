@@ -168,7 +168,11 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
     int num_descriptors;
     char *rdesc;
     unsigned int n = 0;
-    size_t offset = offsetof(struct hid_descriptor, desc);
+    #if LINUX_VERSION_CODE < KERNEL_VERSION(6,12,34)
+        size_t offset = offsetof(struct hid_descriptor, desc);
+    #else
+        size_t offset = offsetof(struct hid_descriptor, rpt_desc);
+    #endif
 
                                                                 //Leetmouse Mod END
     interface = intf->cur_altsetting;
@@ -211,12 +215,17 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
         goto fail1;
     }
 
-    num_descriptors = min_t(int, hdesc->bNumDescriptors,
-           (hdesc->bLength - offset) / sizeof(struct hid_class_descriptor));
-
-    for (n = 0; n < num_descriptors; n++)
-        if (hdesc->desc[n].bDescriptorType == HID_DT_REPORT)
-            rsize = le16_to_cpu(hdesc->desc[n].wDescriptorLength);
+    #if LINUX_VERSION_CODE < KERNEL_VERSION(6,12,34)
+        num_descriptors = min_t(int, hdesc->bNumDescriptors,
+            (hdesc->bLength - offset) / sizeof(struct hid_class_descriptor));
+            
+        for (n = 0; n < num_descriptors; n++)
+            if (hdesc->desc[n].bDescriptorType == HID_DT_REPORT)
+                rsize = le16_to_cpu(hdesc->desc[n].wDescriptorLength);
+    #else
+        if (hdesc->rpt_desc.bDescriptorType == HID_DT_REPORT)
+            rsize = le16_to_cpu(hdesc->rpt_desc.wDescriptorLength);
+    #endif
 
     if (!rsize || rsize > HID_MAX_DESCRIPTOR_SIZE) {
         dbg_hid("weird size of report descriptor (%u)\n", rsize);
