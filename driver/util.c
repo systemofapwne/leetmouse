@@ -20,7 +20,7 @@ struct parser_context {
     unsigned int offset;                        // Local offset in this report ID context
 };
 
-#define NUM_USAGES 16
+#define NUM_USAGES 32
 #define NUM_CONTEXTS 32                             // This should be more than enough for a HID mouse. If we exceed this number, the parser below will eventually fail
 #define SET_ENTRY(entry, _id, _offset, _size, _sign) \
     entry.id = _id;                                 \

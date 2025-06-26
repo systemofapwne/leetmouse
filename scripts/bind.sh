@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # TODO This proof-of-concept bind script will be replaced by a more mainstreamed udev rule in the near future.
 

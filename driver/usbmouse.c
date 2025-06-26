@@ -89,11 +89,10 @@ static void usb_mouse_irq(struct urb *urb)
         input_report_key(dev, BTN_MIDDLE, btn & 0x04);
         input_report_key(dev, BTN_SIDE,   btn & 0x08);
         input_report_key(dev, BTN_EXTRA,  btn & 0x10);
-        if(!accelerate(&x,&y,&wheel)){
-            input_report_rel(dev, REL_X,     x);
-            input_report_rel(dev, REL_Y,     y);
-            input_report_rel(dev, REL_WHEEL, wheel);
-        }
+        accelerate(&x,&y,&wheel);
+        input_report_rel(dev, REL_X,     x);
+        input_report_rel(dev, REL_Y,     y);
+        input_report_rel(dev, REL_WHEEL, wheel);
     }
                                                                 //Leetmouse Mod END
 
@@ -168,7 +167,11 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
     int num_descriptors;
     char *rdesc;
     unsigned int n = 0;
+		#if LINUX_VERSION_CODE < KERNEL_VERSION(6,15,3)
     size_t offset = offsetof(struct hid_descriptor, desc);
+		#else
+    size_t offset = offsetof(struct hid_descriptor, rpt_desc);
+		#endif
 
                                                                 //Leetmouse Mod END
     interface = intf->cur_altsetting;
@@ -182,9 +185,9 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 
     pipe = usb_rcvintpipe(dev, endpoint->bEndpointAddress);
     #if LINUX_VERSION_CODE < KERNEL_VERSION(5,19,0)
-        maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
+    maxp = usb_maxpacket(dev, pipe, usb_pipeout(pipe));
     #else
-        maxp = usb_maxpacket(dev, pipe);
+    maxp = usb_maxpacket(dev, pipe);
     #endif
 
     mouse = kzalloc(sizeof(struct usb_mouse), GFP_KERNEL);
@@ -192,7 +195,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
     if (!mouse || !input_dev)
         goto fail1;
     
-    mouse->data = usb_alloc_coherent(dev, BUFFER_SIZE, GFP_ATOMIC, &mouse->data_dma); //Leetmouse Mod
+    mouse->data = usb_alloc_coherent(dev, BUFFER_SIZE, GFP_KERNEL, &mouse->data_dma); //Leetmouse Mod
     if (!mouse->data)
         goto fail1;
 
@@ -214,9 +217,15 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
     num_descriptors = min_t(int, hdesc->bNumDescriptors,
            (hdesc->bLength - offset) / sizeof(struct hid_class_descriptor));
 
-    for (n = 0; n < num_descriptors; n++)
-        if (hdesc->desc[n].bDescriptorType == HID_DT_REPORT)
-            rsize = le16_to_cpu(hdesc->desc[n].wDescriptorLength);
+    for (n = 0; n < num_descriptors; n++) {
+				#if LINUX_VERSION_CODE < KERNEL_VERSION(6,15,3)
+				const struct hid_class_descriptor *desc = &hdesc->desc[n];
+				#else
+				const struct hid_class_descriptor *desc = n == 0 ? &hdesc->rpt_desc : &hdesc->opt_descs[n - 1];
+				#endif
+        if (desc->bDescriptorType == HID_DT_REPORT)
+					rsize = le16_to_cpu(desc->wDescriptorLength);
+		}
 
     if (!rsize || rsize > HID_MAX_DESCRIPTOR_SIZE) {
         dbg_hid("weird size of report descriptor (%u)\n", rsize);
@@ -260,7 +269,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
     mouse->dev = input_dev;
 
     if (dev->manufacturer)
-        strlcpy(mouse->name, dev->manufacturer, sizeof(mouse->name));
+        strscpy(mouse->name, dev->manufacturer, sizeof(mouse->name));
 
     if (dev->product) {
         if (dev->manufacturer)
