@@ -7,24 +7,7 @@
 ** Preparation & Configuration
    + Clone this repository, copy =driver/config.sample.h= to =/driver/config.h= and edit it in your favorite text editor. Change the defines at the top of config.h to match your desired acceleration settings.
    + Make sure, you have the required toolchains (e.g. =base-devel= on Arch or =build-essentials= on Debian) installed as well as the =linux-headers= for your installed kernel.
-** Arch/Manjaro
-   Since the maintainer of =LEETMOUSE= is an Arch and Manjaro user, a =PKGBUILD= has been written for seamless integration into pacman.
 
-   *Installation*
-   #+begin_src sh
-   # Create the PKGBUILD, copy associated files and run makepkg
-   ./scripts/build_arch.sh
-   # Run pacman on the created package
-   sudo pacman -U pkg/build/leetmouse*.zst
-   #+end_src
-   All your mice should now be bound to this driver. They will also automatically bind to it after a reboot. If this did not work, run =sudo /usr/lib/udev/leetmouse_manage bind_all=
-   
-   *Uninstallation*
-   #+begin_src sh
-   sudo pacman -R leetmouse-driver-dkms
-   #+end_src
-   All your mice should now be bound to the generic usbhid driver again.
-   
 ** Other distros
    Other distributions' package-managers are not yet supported and thus need a manual installation. However Debian based systems are planned.
    The installation is not yet very polished but eventually will become so.
