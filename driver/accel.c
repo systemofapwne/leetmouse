@@ -151,7 +151,7 @@ INLINE void update_params(ktime_t now)
         g_LutSize = 0;
 
     // Sanity check
-    if((g_LutSize <= 1 /*|| g_LutStride == 0*/) && g_AccelerationMode == AccelMode_Lut)
+    if(g_LutSize <= 1 && g_AccelerationMode == AccelMode_Lut)
         g_AccelerationMode = AccelMode_Current;
 
     if (g_AccelerationMode == AccelMode_Lut &&
@@ -180,9 +180,6 @@ int accelerate(int *x, int *y, int *wheel)
     static ktime_t last;
     ktime_t now;
     int status = 0;
-
-    if(!modesConst.is_init)
-        update_constants();
 
     delta_x = FP64_FromInt(*x);
     delta_y = FP64_FromInt(*y);
