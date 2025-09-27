@@ -9,25 +9,27 @@
 /// Class for interfacing with the 'fake' driver
 ///
 class TestManager {
-    public:
-
+public:
     //static TestManager& GetInstance();
     static void Initialize();
 
-    static FP_LONG AccelLinear(FP_LONG x, FP_LONG acceleration, bool gain, FP_LONG midpoint);
-    static FP_LONG AccelPower(FP_LONG x, FP_LONG acceleration, FP_LONG exponent, FP_LONG midpoint);
-    static FP_LONG AccelClassic(FP_LONG x, FP_LONG acceleration, FP_LONG exponent);
+    static FP_LONG AccelLinear(FP_LONG x, FP_LONG acceleration, FP_LONG midpoint, bool gain);
+    static FP_LONG AccelPower(FP_LONG x, FP_LONG acceleration, FP_LONG exponent, FP_LONG midpoint, FP_LONG motivity,
+                              bool gain);
+    static FP_LONG AccelClassic(FP_LONG x, FP_LONG acceleration, FP_LONG exponent, FP_LONG midpoint, bool gain);
     static FP_LONG AccelMotivity(FP_LONG x, FP_LONG acceleration, FP_LONG exponent, FP_LONG midpoint);
-    static FP_LONG AccelSynchronous(FP_LONG x, FP_LONG sync_speed, FP_LONG gamma, FP_LONG smoothness, FP_LONG motivity, bool gain);
+    static FP_LONG AccelSynchronous(FP_LONG x, FP_LONG sync_speed, FP_LONG gamma, FP_LONG smoothness, FP_LONG motivity,
+                                    bool gain);
     static FP_LONG AccelJump(FP_LONG x, FP_LONG acceleration, FP_LONG exponent, FP_LONG midpoint, bool gain);
     static FP_LONG AccelLUT(FP_LONG x, FP_LONG values_x[], FP_LONG values_y[], unsigned long count);
     static FP_LONG AccelLUT(FP_LONG x);
 
-    static FP_LONG AccelLinear(float x, float acceleration, bool gain, float midpoint);
-    static FP_LONG AccelPower(float x, float acceleration, float exponent, float midpoint);
-    static FP_LONG AccelClassic(float x, float acceleration, float exponent);
+    static FP_LONG AccelLinear(float x, float acceleration, float midpoint, bool gain);
+    static FP_LONG AccelPower(float x, float acceleration, float exponent, float midpoint, float motivity, bool gain);
+    static FP_LONG AccelClassic(float x, float acceleration, float exponent, float midpoint, bool gain);
     static FP_LONG AccelMotivity(float x, float acceleration, float exponent, float midpoint);
-    static FP_LONG AccelSynchronous(float x, float sync_speed, float gamma, float smoothness, float motivity, bool gain);
+    static FP_LONG AccelSynchronous(float x, float sync_speed, float gamma, float smoothness, float motivity,
+                                    bool gain);
     static FP_LONG AccelJump(float x, float acceleration, float exponent, float midpoint, bool gain);
     static FP_LONG AccelLUT(float x, float values_x[], float values_y[], unsigned long count);
 
@@ -40,7 +42,7 @@ class TestManager {
     static FP_LONG AccelJump(float x); // Parameter values set manually!
     static FP_LONG AccelLUT(float x); // Parameter values set manually!
 
-    static ModesConstants& GetModesConstants();
+    static ModesConstants &GetModesConstants();
     static void UpdateModesConstants();
     static bool ValidateConstants();
     static bool ValidateFunctionGUI();
@@ -78,7 +80,6 @@ class TestManager {
 
     static float EvalFloatFunc(float x);
 };
-
 
 
 #endif //TESTMANAGER_H

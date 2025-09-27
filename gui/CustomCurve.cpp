@@ -180,8 +180,8 @@ int CustomCurve::ExportCurveToLUT(double *LUT_data_x, double *LUT_data_y) const 
 // https://www.codeproject.com/Articles/31859/Draw-a-Smooth-Curve-through-a-Set-of-2D-Points-wit
 void CustomCurve::SmoothBezier() {
     //bezier_control_points.clear();
-    auto& center_points = points;
-    auto& bezier_control_points = control_points;
+    auto &center_points = points;
+    auto &bezier_control_points = control_points;
 
     int n = center_points.size() - 1;
     if (n < 1) {
@@ -202,7 +202,7 @@ void CustomCurve::SmoothBezier() {
         return;
     }
 
-    center_points.emplace_back(center_points[n] * 2 - center_points[n-1]); // Push dummy point at the end
+    center_points.emplace_back(center_points[n] * 2 - center_points[n - 1]); // Push dummy point at the end
 
     n += 1;
     bezier_control_points.resize(n);
@@ -213,7 +213,7 @@ void CustomCurve::SmoothBezier() {
 
     // Set right hand side X values
     for (int i = 1; i < n - 1; ++i)
-        rhs[i] = center_points[i] * 4 +  center_points[i + 1] * 2;
+        rhs[i] = center_points[i] * 4 + center_points[i + 1] * 2;
     rhs[0] = center_points[0] + center_points[1] * 2;
     rhs[n - 1] = (center_points[n - 1] * 8 + center_points[n]) / 2.0;
     // Get first control points
@@ -238,11 +238,10 @@ void CustomCurve::SmoothBezier() {
         if (!center_points[i].is_locked)
             bezier_control_points[i][0] = x[i];
         // Second control point
-        if (i == n -1 || !center_points[i+1].is_locked)  {
+        if (i == n - 1 || !center_points[i + 1].is_locked) {
             if (i < n - 1) {
                 bezier_control_points[i][1] = center_points[i + 1] * 2 - x[i + 1];
-            }
-            else
+            } else
                 bezier_control_points[i][1] = center_points[n] + x[n - 1] / 2;
         }
     }
@@ -264,8 +263,8 @@ void CustomCurve::UpdateLUT() {
     ImVec2 last_point = points[0];
     for (int i = 0; i < points.size() - 1; i++) {
         for (int j = 0; j < BEZIER_FRAG_SEGMENTS; ++j) {
-            float t  = (float)j / (BEZIER_FRAG_SEGMENTS - 1);
-            ImVec2 p = ImBezierCubicCalc(points[i], control_points[i][0], control_points[i][1], points[i+1], t);
+            float t = (float) j / (BEZIER_FRAG_SEGMENTS - 1);
+            ImVec2 p = ImBezierCubicCalc(points[i], control_points[i][0], control_points[i][1], points[i + 1], t);
             LUT_points[i * BEZIER_FRAG_SEGMENTS + j] = p;
             if (last_point.x > p.x) {
                 // Bad Curve

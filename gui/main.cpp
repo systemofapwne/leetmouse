@@ -25,8 +25,11 @@
 
 AccelMode selected_mode = AccelMode_Linear;
 
-const char *AccelModes[] = {"Current", "Linear", "Power", "Classic", "Motivity", "Synchronous", "Natural", "Jump", "Look Up Table", "Custom Curve"};
-static_assert(sizeof(AccelModes) / sizeof(char*) == AccelMode_Count);
+const char *AccelModes[] = {
+    "Current", "Linear", "Power", "Classic", "Motivity", "Synchronous", "Natural", "Jump", "Look Up Table",
+    "Custom Curve"
+};
+static_assert(sizeof(AccelModes) / sizeof(char *) == AccelMode_Count);
 #define NUM_MODES AccelMode_Count //(sizeof(AccelModes) / sizeof(char *))
 
 Parameters params[NUM_MODES]; // Driver parameters for each mode
@@ -46,11 +49,12 @@ void ResetParameters();
 int OnGui() {
     using namespace std::chrono;
 
-    ImGuiContext& g = *GImGui;
+    ImGuiContext &g = *GImGui;
 
     static float mouse_smooth = 0.75;
     static steady_clock::time_point last_apply_clicked;
-    static bool show_custom_curve_control_points = true, move_control_points_along = false, show_custom_curve_LUT_points = false;
+    static bool show_custom_curve_control_points = true, move_control_points_along = false, show_custom_curve_LUT_points
+            = false;
 
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
@@ -102,16 +106,17 @@ int OnGui() {
 
             if (changed) {
                 for (int i = 1; i < NUM_MODES; i++) {
-                    if (i == AccelMode_CustomCurve) { // Preserve the custom curve points when copying
+                    if (i == AccelMode_CustomCurve) {
+                        // Preserve the custom curve points when copying
                         CustomCurve curve = params[AccelMode_CustomCurve].customCurve;
                         params[i] = imported_params;
                         params[i].customCurve = curve;
                         params[i].accelMode = AccelMode_Lut;
 
-                        params[i].LUT_size = params[i].customCurve.ExportCurveToLUT(params[i].LUT_data_x, params[i].LUT_data_y);
+                        params[i].LUT_size = params[i].customCurve.ExportCurveToLUT(
+                            params[i].LUT_data_x, params[i].LUT_data_y);
                         params[i].customCurve.UpdateLUT();
-                    }
-                    else {
+                    } else {
                         params[i] = imported_params;
                         params[i].accelMode = static_cast<AccelMode>(i == 0 ? used_mode : i);
                     }
@@ -169,14 +174,15 @@ int OnGui() {
 
         // Display Global Parameters First
 #ifdef USE_INPUT_DRAG
-                change |= ImGui::DragFloat("##Sens_Param", &params[selected_mode].sens, 0.01, 0.01, 10, "Sensitivity %0.2f");
-                change |= ImGui::DragFloat("##OutCap_Param", &params[selected_mode].outCap, 0.05, 0, 100, "Output Cap. %0.2f");
-                change |= ImGui::DragFloat("##InCap_Param", &params[selected_mode].inCap, 0.1, 0, 200, "Input Cap. %0.2f");
-                change |= ImGui::DragFloat("##Offset_Param", &params[selected_mode].offset, 0.05, -50, 50, "Offset %0.2f");
-                change |= ImGui::DragFloat("##PreScale_Param", &params[selected_mode].preScale, 0.01, 0.01, 10, "Pre-Scale %0.2f");
-                ImGui::SetItemTooltip("Used to adjust for DPI (Should be 800/DPI)");
-                change |= ImGui::DragFloat("##Adv_Rotation", &params[selected_mode].rotation, 0.1, 0, 180,
-                                                u8"Rotation Angle %0.2f°");
+        if (params[selected_mode].use_anisotropy) {
+            change |= ImGui::DragFloat("##Sens_Param", &params[selected_mode].sens, 0.01, 0.005, 5, "Sensitivity X %.3f");
+            change |= ImGui::DragFloat("##SensY_Param", &params[selected_mode].sensY, 0.01, 0.005, 5, "Sensitivity Y %.3f");
+        } else
+            change |= ImGui::DragFloat("##Sens_Param", &params[selected_mode].sens, 0.01, 0.005, 5, "Sensitivity %.3f");
+        change |= ImGui::DragFloat("##OutCap_Param", &params[selected_mode].outCap, 0.05, 0, 100, "Output Cap. %0.2f");
+        change |= ImGui::DragFloat("##InCap_Param", &params[selected_mode].inCap, 0.1, 0, 200, "Input Cap. %0.2f");
+        change |= ImGui::DragFloat("##Offset_Param", &params[selected_mode].offset, 0.05, -50, 50, "Offset %0.2f");
+        change |= ImGui::DragFloat("##PreScale_Param", &params[selected_mode].preScale, 0.01, 0.01, 10, "Pre-Scale %0.2f");
 #else
         if (params[selected_mode].use_anisotropy) {
             change |= ImGui::SliderFloat("##Sens_Param", &params[selected_mode].sens, 0.005, 5, "Sensitivity X %.3f");
@@ -187,8 +193,8 @@ int OnGui() {
         change |= ImGui::SliderFloat("##InCap_Param", &params[selected_mode].inCap, 0, 120, "Input Cap. %0.2f");
         change |= ImGui::SliderFloat("##Offset_Param", &params[selected_mode].offset, -50, 50, "Offset %0.2f");
         change |= ImGui::SliderFloat("##PreScale_Param", &params[selected_mode].preScale, 0.01, 10, "Pre-Scale %0.2f");
-        ImGui::SetItemTooltip("Used to adjust for different DPI values (Set to 800/DPI)");
 #endif
+        ImGui::SetItemTooltip("Used to adjust for different DPI values (Set to 800/DPI)");
 
         ImGui::SeparatorText("Advanced");
 
@@ -201,7 +207,7 @@ int OnGui() {
             case AccelMode_Linear: // Linear
             {
 #ifdef USE_INPUT_DRAG
-                        change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.0001, 0.0005, 0.1, "Acceleration %0.4f", ImGuiSliderFlags_Logarithmic);
+                change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.0001, 0.0005, 0.1, "Acceleration %0.4f", ImGuiSliderFlags_Logarithmic);
 #else
                 change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0.0005, 0.1,
                                              "Acceleration %0.4f", ImGuiSliderFlags_Logarithmic);
@@ -223,13 +229,16 @@ int OnGui() {
             case AccelMode_Power: // Power
             {
 #ifdef USE_INPUT_DRAG
-                        change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.01, 0.01, 10, "Acceleration %0.2f");
-                        change |= ImGui::DragFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 0.01, 1, "Exponent %0.2f");
+                change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.01, 0.01, 10,
+                                           "Acceleration %0.2f");
+                change |= ImGui::DragFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 0.01, 1,
+                                           "Exponent %0.2f");
 #else
                 change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0.001, 5,
                                              "Acceleration %0.3f");
                 change |= ImGui::SliderFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 1, "Exponent %0.2f");
-                change |= ImGui::SliderFloat("##OutOffset_Param", &params[selected_mode].midpoint, 0, 5, "Output Offset %0.2f");
+                change |= ImGui::SliderFloat("##OutOffset_Param", &params[selected_mode].midpoint, 0, 5,
+                                             "Output Offset %0.2f");
 #endif
                 change |= ImGui::Checkbox("##Smoothing_Param", &params[selected_mode].useSmoothing);
                 ImGui::SameLine();
@@ -270,8 +279,10 @@ int OnGui() {
             case AccelMode_Motivity: // Motivity
             {
 #ifdef USE_INPUT_DRAG
-                        change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.01, 0.01, 10, "Acceleration %0.2f");
-                        change |= ImGui::DragFloat("##MidPoint_Param", &params[selected_mode].midpoint, 0.05, 0.1, 50, "Start %0.2f");
+                change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.01, 0.01, 10,
+                                           "Acceleration %0.2f");
+                change |= ImGui::DragFloat("##MidPoint_Param", &params[selected_mode].midpoint, 0.05, 0.1, 50,
+                                           "Start %0.2f");
 #else
                 change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0.01, 10,
                                              "Acceleration %0.2f");
@@ -280,8 +291,7 @@ int OnGui() {
 #endif
                 break;
             }
-            case AccelMode_Synchronous:
-            {
+            case AccelMode_Synchronous: {
 #ifdef USE_INPUT_DRAG
                 change |= ImGui::DragFloat("##MidPoint_Param", &params[selected_mode].exponent, 0.01, 0, 20, "Gamma %0.2f");
                 change |= ImGui::DragFloat("##Exp_Param", &params[selected_mode].midpoint, 0.05, 0.1, 20, "Smoothness %0.2f", ImGuiSliderFlags_Logarithmic);
@@ -315,7 +325,7 @@ int OnGui() {
                 change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0.001, 5,
                                              "Decay Rate %0.3f");
                 change |= ImGui::SliderFloat("##MidPoint_Param", &params[selected_mode].midpoint, 0, 50,
-                             "Midpoint %0.2f");
+                                             "Midpoint %0.2f");
                 change |= ImGui::SliderFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 8,
                                              "Limit %0.2f");
 #endif
@@ -323,13 +333,16 @@ int OnGui() {
                 ImGui::SameLine();
                 ImGui::Text("Use Smoothing");
                 break;
-	        }
+            }
             case AccelMode_Jump: // Jump
             {
 #ifdef USE_INPUT_DRAG
-                        change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.01, 0, 10, "Acceleration %0.2f");
-                        change |= ImGui::DragFloat("##MidPoint_Param", &params[selected_mode].midpoint, 0.05, 0.1, 50, "Start %0.2f");
-                        change |= ImGui::DragFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 0.01, 1, "Smoothness %0.2f");
+                change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.01, 0, 10,
+                                           "Acceleration %0.2f");
+                change |= ImGui::DragFloat("##MidPoint_Param", &params[selected_mode].midpoint, 0.05, 0.1, 50,
+                                           "Start %0.2f");
+                change |= ImGui::DragFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 0.01, 1,
+                                           "Smoothness %0.2f");
 #else
                 change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0, 10,
                                              "Acceleration %0.2f");
@@ -372,30 +385,24 @@ int OnGui() {
                 ImGui::Checkbox("Link Control Points", &move_control_points_along);
                 ImGui::SetItemTooltip("Moves control points along with it's parent curve point");
 
-                auto& points = params[selected_mode].customCurve.points;
-                auto& control_points = params[selected_mode].customCurve.control_points;
+                auto &points = params[selected_mode].customCurve.points;
+                auto &control_points = params[selected_mode].customCurve.control_points;
 
                 ImGui::Unindent();
                 for (int i = 0; i < points.size(); ++i) {
-                    float p_min = i > 0 ? points[i-1].x + CURVE_POINTS_MARGIN : 0;
-                    float p_max = i < points.size() - 1 ? points[i+1].x - CURVE_POINTS_MARGIN : 1000;
-                    auto& p = points[i];
+                    float p_min = i > 0 ? points[i - 1].x + CURVE_POINTS_MARGIN : 0;
+                    float p_max = i < points.size() - 1 ? points[i + 1].x - CURVE_POINTS_MARGIN : 1000;
+                    auto &p = points[i];
                     ImGui::PushID(i);
                     if (ImGui::TreeNode("CrvPnt", "Point %d", i)) {
                         auto p_before = p;
                         bool drag_changed = false;
                         ImGui::BeginGroup();
                         ImGui::PushMultiItemsWidths(2, ImGui::GetContentRegionAvail().x);
-// Sliders don't work too well here, so I decided to stick with drag sliders
-//#ifdef USE_INPUT_DRAG
+                        // Sliders don't work too well here, so I decided to stick with drag sliders
                         drag_changed |= ImGui::DragFloat("##pos1x", &p.x, 0.5, p_min, p_max, "%.3f x");
                         ImGui::SameLine(0, g.Style.ItemInnerSpacing.x);
                         drag_changed |= ImGui::DragFloat("##pos1y", &p.y, 0.01, 0, 10, "%.3f y");
-// #else
-//                         drag_changed |= ImGui::SliderFloat("##pos1x", &p.x, p_min, p_max);
-//                         ImGui::SameLine(0, g.Style.ItemInnerSpacing.x);
-//                         drag_changed |= ImGui::SliderFloat("##pos1y", &p.y, 0, 10);
-// #endif
                         ImGui::PopItemWidth(); ImGui::PopItemWidth();
                         ImGui::EndGroup();
 
@@ -408,15 +415,12 @@ int OnGui() {
                             // Apply the Bezier point drag to it's control points
                             if (i == 0) {
                                 control_points[0][0] += drag;
-                            }
-                            else if (i == points.size() - 1) {
-                                control_points[i-1][1] += drag;
-                            }
-                            else {
+                            } else if (i == points.size() - 1) {
+                                control_points[i - 1][1] += drag;
+                            } else {
                                 control_points[i][0] += drag;
-                                control_points[i-1][1] += drag;
+                                control_points[i - 1][1] += drag;
                             }
-
                         }
                         if (points.size() > 1) {
                             ImGui::Separator();
@@ -424,12 +428,14 @@ int OnGui() {
                                 ImGui::PushID(j);
                                 ImGui::BeginGroup();
                                 ImGui::PushMultiItemsWidths(2, ImGui::GetContentRegionAvail().x);
-                                auto& p1 = control_points[i == points.size() - 1 ? (i-1) : (i-j)][i == 0 ? 0 : i == points.size() - 1 ? 1 : j];
+                                auto &p1 = control_points[i == points.size() - 1 ? (i - 1) : (i - j)][
+                                    i == 0 ? 0 : i == points.size() - 1 ? 1 : j];
                                 // p.x = std::clamp(p.x, i > 0 ? points[i-1].x + 0.5f : 0, i < points.size() - 1 ? points[i+1].x - 0.5f : 1000);
                                 change |= ImGui::DragFloat("##pos2x", &p1.x, 0.5, p_min, p_max, "%.3f x");
                                 ImGui::SameLine(0, g.Style.ItemInnerSpacing.x);
                                 change |= ImGui::DragFloat("##pos2y", &p1.y, 0.01, 0, 10, "%.3f y");
-                                ImGui::PopItemWidth(); ImGui::PopItemWidth();
+                                ImGui::PopItemWidth();
+                                ImGui::PopItemWidth();
                                 ImGui::EndGroup();
                                 ImGui::PopID();
                             }
@@ -445,7 +451,8 @@ int OnGui() {
 
                 if (change) {
                     params[selected_mode].customCurve.ApplyCurveConstraints();
-                    params[selected_mode].LUT_size = params[selected_mode].customCurve.ExportCurveToLUT(params[selected_mode].LUT_data_x, params[selected_mode].LUT_data_y);
+                    params[selected_mode].LUT_size = params[selected_mode].customCurve.ExportCurveToLUT(
+                        params[selected_mode].LUT_data_x, params[selected_mode].LUT_data_y);
                     params[selected_mode].customCurve.UpdateLUT();
                 }
 
@@ -492,7 +499,7 @@ int OnGui() {
         ImGui::PopStyleColor();
         ImGui::PushItemWidth(avail.x);
 #ifdef USE_INPUT_DRAG
-                ImGui::DragFloat("##MouseSmoothness", &mouse_smooth, 0.001, 0.0, 0.99, "Mouse Smoothness %0.2f");
+        ImGui::DragFloat("##MouseSmoothness", &mouse_smooth, 0.001, 0.0, 0.99, "Mouse Smoothness %0.2f");
 #else
         ImGui::SliderFloat("##MouseSmoothness", &mouse_smooth, 0.0, 0.99, "Mouse Speed Smoothness %0.2f");
 #endif
@@ -576,15 +583,15 @@ int OnGui() {
             static int last_held_point = -1;
             int hovered_point = -1;
 
-            auto& points = params[selected_mode].customCurve.points;
-            auto& control_points = params[selected_mode].customCurve.control_points;
+            auto &points = params[selected_mode].customCurve.points;
+            auto &control_points = params[selected_mode].customCurve.control_points;
 
             if (!points.empty()) {
                 // Draw lines between control and Bezier points
                 if (show_custom_curve_control_points) {
                     ImPlot::PushPlotClipRect();
-                    for (int i = 0; i < points.size()-1; ++i) {
-                        auto& p = points[i];
+                    for (int i = 0; i < points.size() - 1; ++i) {
+                        auto &p = points[i];
                         ImVec2 p1 = ImPlot::PlotToPixels(p);
                         ImVec2 p2 = ImPlot::PlotToPixels(points[(i + 1) % points.size()]);
                         ImVec2 pc1 = ImPlot::PlotToPixels(control_points[i][0]);
@@ -598,15 +605,16 @@ int OnGui() {
 
                 // Draw Bezier points
                 for (int i = 0; i < points.size(); ++i) {
-                    auto& p = points[i];
-                    float p_min = i > 0 ? points[i-1].x + 0.5f : 0;
-                    float p_max = i < points.size() - 1 ? points[i+1].x - 0.5f : 1000;
+                    auto &p = points[i];
+                    float p_min = i > 0 ? points[i - 1].x + 0.5f : 0;
+                    float p_max = i < points.size() - 1 ? points[i + 1].x - 0.5f : 1000;
                     // char _buf[12];
                     // sprintf(_buf, "P%i", i);
                     // ImPlot::PlotText(_buf, p.x, p.y);
                     // unique even id
-                    ImGui::PushID(i*1512 + 22);
-                    modified |= ImPlot::DragPoint(i*2,&p.x,&p.y, ImVec4(0,0.9f,0,1),4, ImPlotDragToolFlags_None, &is_pressed, &is_hovered, &is_held);
+                    ImGui::PushID(i * 1512 + 22);
+                    modified |= ImPlot::DragPoint(i * 2, &p.x, &p.y, ImVec4(0, 0.9f, 0, 1), 4, ImPlotDragToolFlags_None,
+                                                  &is_pressed, &is_hovered, &is_held);
                     is_interacting_with_points |= is_pressed || is_held || is_hovered;
 
                     if (is_held) {
@@ -622,7 +630,7 @@ int OnGui() {
                         held_point = -1;
 
                     auto old_cursor_pos = ImGui::GetCursorPos();
-                    ImVec2 pos = ImPlot::PlotToPixels(p.x,p.y,IMPLOT_AUTO,IMPLOT_AUTO);
+                    ImVec2 pos = ImPlot::PlotToPixels(p.x, p.y,IMPLOT_AUTO,IMPLOT_AUTO);
                     ImGui::SetCursorPos(pos - ImVec2(5, 5));
                     ImGui::InvisibleButton("#invBt", {10, 10});
                     ImGui::SetCursorPos(old_cursor_pos);
@@ -650,22 +658,20 @@ int OnGui() {
                             // Apply the Bezier point drag to it's control points
                             if (i == 0) {
                                 control_points[0][0] += drag;
-                            }
-                            else if (i == points.size() - 1) {
-                                control_points[i-1][1] += drag;
-                            }
-                            else {
+                            } else if (i == points.size() - 1) {
+                                control_points[i - 1][1] += drag;
+                            } else {
                                 control_points[i][0] += drag;
-                                control_points[i-1][1] += drag;
+                                control_points[i - 1][1] += drag;
                             }
-
                         }
                         if (points.size() > 1)
                             for (int j = (i == points.size() - 1 || i == 0) ? 0 : 1; j >= 0; j--) {
                                 ImGui::PushID(j);
                                 ImGui::BeginGroup();
                                 ImGui::PushMultiItemsWidths(2, ImGui::GetContentRegionAvail().x);
-                                auto& p1 = control_points[i == points.size() - 1 ? (i-1) : (i-j)][i == 0 ? 0 : i == points.size() - 1 ? 1 : j];
+                                auto &p1 = control_points[i == points.size() - 1 ? (i - 1) : (i - j)][
+                                    i == 0 ? 0 : i == points.size() - 1 ? 1 : j];
                                 // p.x = std::clamp(p.x, i > 0 ? points[i-1].x + 0.5f : 0, i < points.size() - 1 ? points[i+1].x - 0.5f : 1000);
                                 modified |= ImGui::DragFloat("##pos2x", &p1.x, 0.5, p_min, p_max);
                                 ImGui::SameLine(0, g.Style.ItemInnerSpacing.x);
@@ -675,16 +681,16 @@ int OnGui() {
                                 ImGui::PopID();
                             }
                         if (ImGui::Button("Remove", {-1, 0})) {
-                            points.erase(points.begin()+i);
+                            points.erase(points.begin() + i);
                             if (!points.empty()) {
                                 if (i > 0 && i < points.size()) {
                                     // Swap control points before erasing, because of how control points are stored
-                                    std::swap(control_points[i-1][0], control_points[i][0]);
+                                    std::swap(control_points[i - 1][0], control_points[i][0]);
                                 }
                                 if (i > 0)
-                                    control_points.erase(control_points.begin()+i-1);
+                                    control_points.erase(control_points.begin() + i - 1);
                                 else
-                                    control_points.erase(control_points.begin()+i);
+                                    control_points.erase(control_points.begin() + i);
                             }
                             modified = true;
                             ImGui::CloseCurrentPopup();
@@ -706,13 +712,11 @@ int OnGui() {
                             // Apply the Bezier point drag to it's control points
                             if (held_point == 0) {
                                 control_points[0][0] += drag;
-                            }
-                            else if (held_point == points.size() - 1) {
-                                control_points[held_point-1][1] += drag;
-                            }
-                            else {
+                            } else if (held_point == points.size() - 1) {
+                                control_points[held_point - 1][1] += drag;
+                            } else {
                                 control_points[held_point][0] += drag;
-                                control_points[held_point-1][1] += drag;
+                                control_points[held_point - 1][1] += drag;
                             }
                         }
 
@@ -724,10 +728,15 @@ int OnGui() {
 
                         if (held_point < points.size() - 1)
                             control_points[held_point][0].x = std::clamp(control_points[held_point][0].x,
-                                points[held_point].x + CURVE_POINTS_MARGIN, points[held_point+1].x - CURVE_POINTS_MARGIN);
+                                                                         points[held_point].x + CURVE_POINTS_MARGIN,
+                                                                         points[held_point + 1].x -
+                                                                         CURVE_POINTS_MARGIN);
                         if (held_point > 0)
-                            control_points[held_point-1][1].x = std::clamp(control_points[held_point-1][1].x,
-                                points[held_point-1].x + CURVE_POINTS_MARGIN,  points[held_point].x - CURVE_POINTS_MARGIN);
+                            control_points[held_point - 1][1].x = std::clamp(control_points[held_point - 1][1].x,
+                                                                             points[held_point - 1].x +
+                                                                             CURVE_POINTS_MARGIN,
+                                                                             points[held_point].x -
+                                                                             CURVE_POINTS_MARGIN);
                     }
                 }
 
@@ -735,25 +744,38 @@ int OnGui() {
                 if (show_custom_curve_control_points && points.size() > 1) {
                     for (int i = 0; i < control_points.size(); ++i) {
                         for (int j = 0; j < 2; j++) {
-                            bool is_point_hovered = hovered_point != -1 && ((i == hovered_point && j == 0) || (i == hovered_point - 1 && j == 1));
-                            is_point_hovered |= held_point != -1 && ((i == held_point && j == 0) || (i == held_point - 1 && j == 1));
-                            bool is_point_locked = points[i+j].is_locked;//(points[i].is_locked && j == 0) || (points[i+1].is_locked && j == 1);
-                            auto& p = control_points[i][j];
+                            bool is_point_hovered =
+                                    hovered_point != -1 && (
+                                        (i == hovered_point && j == 0) || (i == hovered_point - 1 && j == 1));
+                            is_point_hovered |= held_point != -1 && (
+                                (i == held_point && j == 0) || (i == held_point - 1 && j == 1));
+                            bool is_point_locked = points[i + j].is_locked;
+                            //(points[i].is_locked && j == 0) || (points[i+1].is_locked && j == 1);
+                            auto &p = control_points[i][j];
                             // char _buf[12];
                             // sprintf(_buf, "P(%d, %d)", i, j);
                             // ImPlot::PlotText(_buf, p.x, p.y);
                             // unique odd id
 
-                            modified |= ImPlot::DragPoint(i * 4 + j * 2 + 1,&p.x,&p.y,
-                                is_point_locked ? ImVec4(is_point_hovered ? 0.4 : 0.3, 0.7f, 0.8, 1) : ImVec4(is_point_hovered ? 0.3 : 0,0.5f,1, 1),
-                                is_point_hovered ? 5 : 4, ImPlotDragToolFlags_None, &is_pressed, &is_hovered, &is_held);
+                            modified |= ImPlot::DragPoint(i * 4 + j * 2 + 1, &p.x, &p.y,
+                                                          is_point_locked
+                                                              ? ImVec4(is_point_hovered ? 0.4 : 0.3, 0.7f, 0.8, 1)
+                                                              : ImVec4(is_point_hovered ? 0.3 : 0, 0.5f, 1, 1),
+                                                          is_point_hovered ? 5 : 4, ImPlotDragToolFlags_None,
+                                                          &is_pressed, &is_hovered, &is_held);
                             is_interacting_with_points |= is_pressed || is_held || is_hovered;
 
                             if (is_held) {
                                 if (j == 1)
-                                    p.x = std::clamp(p.x, points[i].x + CURVE_POINTS_MARGIN, i < points.size() - 1 ? points[i+1].x - CURVE_POINTS_MARGIN : 1000);
+                                    p.x = std::clamp(p.x, points[i].x + CURVE_POINTS_MARGIN,
+                                                     i < points.size() - 1
+                                                         ? points[i + 1].x - CURVE_POINTS_MARGIN
+                                                         : 1000);
                                 else
-                                    p.x = std::clamp(p.x, points[i].x + CURVE_POINTS_MARGIN, i < points.size() - 1 ? points[i+1].x - CURVE_POINTS_MARGIN : 1000);
+                                    p.x = std::clamp(p.x, points[i].x + CURVE_POINTS_MARGIN,
+                                                     i < points.size() - 1
+                                                         ? points[i + 1].x - CURVE_POINTS_MARGIN
+                                                         : 1000);
                             }
                         }
                     }
@@ -765,12 +787,13 @@ int OnGui() {
                 mouse_pos = ImGui::GetMousePos();
             }
 
-            if (ImGui::IsMouseReleased(0) && !is_interacting_with_points && !ImGui::IsMouseDragging(0) && !ImPlot::GetCurrentPlot()->Held && mouse_pos == ImGui::GetMousePos() && ImPlot::IsPlotHovered()) {
+            if (ImGui::IsMouseReleased(0) && !is_interacting_with_points && !ImGui::IsMouseDragging(0) && !
+                ImPlot::GetCurrentPlot()->Held && mouse_pos == ImGui::GetMousePos() && ImPlot::IsPlotHovered()) {
                 auto m_pos = ImPlot::GetPlotMousePos();
 
                 int best_idx = -1;
                 if (points.size() >= 1) {
-                    for (int i = points.size()-1; i >= 0; i--) {
+                    for (int i = points.size() - 1; i >= 0; i--) {
                         if (points[i].x < m_pos.x) {
                             best_idx = i;
                             break;
@@ -781,26 +804,31 @@ int OnGui() {
                 points.insert(points.begin() + best_idx + 1, static_cast<Ex_Vec2>(m_pos));
 
                 if (points.size() > 1) {
-
                     if (best_idx == -1) {
-                        control_points.insert(control_points.begin(), {m_pos + ImPlotPoint(4, 0), points[1] - ImPlotPoint(4, 0)});
-                    }
-                    else if (points.size() >= 2 && best_idx == points.size() - 2) {  // points.size() - 2 because we changed points' size right before
-                        control_points.insert(control_points.begin() + best_idx, {points[best_idx] + ImPlotPoint(4, 0), m_pos - ImPlotPoint(4, 0)});
+                        control_points.insert(control_points.begin(), {
+                                                  m_pos + ImPlotPoint(4, 0), points[1] - ImPlotPoint(4, 0)
+                                              });
+                    } else if (points.size() >= 2 && best_idx == points.size() - 2) {
+                        // points.size() - 2 because we changed points' size right before
+                        control_points.insert(control_points.begin() + best_idx, {
+                                                  points[best_idx] + ImPlotPoint(4, 0), m_pos - ImPlotPoint(4, 0)
+                                              });
                         // std::swap(control_points[best_idx][0], control_points[best_idx][1]);
                         // control_points[best_idx][0] = points[best_idx] + ImPlotPoint(10, 0);
-                    }
-                    else {
-                        auto cur_point = points[best_idx+1];
+                    } else {
+                        auto cur_point = points[best_idx + 1];
                         auto prev_point = points[best_idx] - cur_point;
-                        auto next_point = points[best_idx+2] - cur_point;
+                        auto next_point = points[best_idx + 2] - cur_point;
 
-                        auto len_prev = std::sqrt(ImLengthSqr(prev_point)), len_next = std::sqrt(ImLengthSqr(next_point));
+                        auto len_prev = std::sqrt(ImLengthSqr(prev_point)), len_next = std::sqrt(
+                            ImLengthSqr(next_point));
 
                         auto dir = next_point * (len_prev / len_next) - prev_point;
                         dir = dir / std::sqrt(ImLengthSqr(dir));
 
-                        control_points.insert(control_points.begin() + best_idx, {m_pos + (-dir * (len_prev / 3)), m_pos + dir * (len_next / 3)});
+                        control_points.insert(control_points.begin() + best_idx, {
+                                                  m_pos + (-dir * (len_prev / 3)), m_pos + dir * (len_next / 3)
+                                              });
 
                         std::swap(control_points[best_idx][0], control_points[best_idx + 1][0]);
                         std::swap(control_points[best_idx + 1][0], control_points[best_idx][1]);
@@ -814,27 +842,29 @@ int OnGui() {
 
             if (modified) {
                 params[selected_mode].customCurve.ApplyCurveConstraints();
-                params[selected_mode].LUT_size = params[selected_mode].customCurve.ExportCurveToLUT(params[selected_mode].LUT_data_x, params[selected_mode].LUT_data_y);
+                params[selected_mode].LUT_size = params[selected_mode].customCurve.ExportCurveToLUT(
+                    params[selected_mode].LUT_data_x, params[selected_mode].LUT_data_y);
                 params[selected_mode].customCurve.UpdateLUT();
                 functions[selected_mode].PreCacheFunc();
             }
 
             // Draw the curve
             if (points.size() > 1) {
-
-                ImPlot::PlotLine("##bez",&params[selected_mode].customCurve.LUT_points[0].x, &params[selected_mode].customCurve.LUT_points[0].y, (points.size() - 1) * BEZIER_FRAG_SEGMENTS, 0, 0, sizeof(ImPlotPoint));
+                ImPlot::PlotLine("##bez", &params[selected_mode].customCurve.LUT_points[0].x,
+                                 &params[selected_mode].customCurve.LUT_points[0].y,
+                                 (points.size() - 1) * BEZIER_FRAG_SEGMENTS, 0, 0, sizeof(ImPlotPoint));
 
                 if (show_custom_curve_LUT_points) {
                     ImPlot::SetNextMarkerStyle(-1, 2);
                     // Draw LUT points
-                    ImPlot::PlotScatterG("LUT points", [](int idx, void* ud) {
-                        double x = static_cast<Parameters*>(ud)->LUT_data_x[idx];
-                        double y = static_cast<Parameters*>(ud)->LUT_data_y[idx];
+                    ImPlot::PlotScatterG("LUT points", [](int idx, void *ud) {
+                        double x = static_cast<Parameters *>(ud)->LUT_data_x[idx];
+                        double y = static_cast<Parameters *>(ud)->LUT_data_y[idx];
                         return ImPlotPoint(x, y);
                     }, &params[selected_mode], params[selected_mode].LUT_size);
 
                     ImPlot::PlotLine("##ActivePlot", functions[selected_mode].values, PLOT_POINTS,
-                        functions[selected_mode].x_stride);
+                                     functions[selected_mode].x_stride);
                 }
             }
 
@@ -842,10 +872,9 @@ int OnGui() {
             //              functions[selected_mode].x_stride);
 
             last_held_point = held_point;
-        }
-        else
+        } else
             ImPlot::PlotLine("##ActivePlot", functions[selected_mode].values, PLOT_POINTS,
-                         functions[selected_mode].x_stride);
+                             functions[selected_mode].x_stride);
 
         ImPlot::PlotScatterG("Mouse Speed", [](int idx, void *data) { return *(ImPlotPoint *) data; }, &mousePoint_main,
                              1);
@@ -933,7 +962,8 @@ void ResetParameters(void) {
         params[mode] = start_params;
         params[mode].accelMode = static_cast<AccelMode>(mode == 0 ? used_mode : mode);
         if (mode == AccelMode_CustomCurve) {
-            params[mode].accelMode = AccelMode_Lut; // Custom curve is saved just like LUT, the only distinction is on the GUI side
+            params[mode].accelMode = AccelMode_Lut;
+            // Custom curve is saved just like LUT, the only distinction is on the GUI side
         }
 
         if (mode == AccelMode_Lut) {
@@ -960,7 +990,8 @@ void ResetParameters(void) {
 
         if (mode == AccelMode_CustomCurve) {
             params->customCurve.ApplyCurveConstraints();
-            params[mode].LUT_size = params[mode].customCurve.ExportCurveToLUT(params[mode].LUT_data_x, params[mode].LUT_data_y);
+            params[mode].LUT_size = params[mode].customCurve.ExportCurveToLUT(
+                params[mode].LUT_data_x, params[mode].LUT_data_y);
             params[mode].customCurve.UpdateLUT();
         }
 

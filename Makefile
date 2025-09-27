@@ -1,4 +1,5 @@
 # Makefile structure blatantly "stolen" from OpenRazer 3.0.0 and adapted for leetmouse
+SHELL := /bin/bash
 
 # DESTDIR is used to install into a different root directory
 DESTDIR?=/

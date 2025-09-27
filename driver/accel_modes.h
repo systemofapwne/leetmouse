@@ -11,6 +11,10 @@
 struct ModesConstants {
     bool is_init;
 
+    // General
+    FP_LONG accel_sub_1;
+    FP_LONG exp_sub_1;
+
     // Synchronous (legacy)
     FP_LONG logMot;
     FP_LONG gammaConst;
@@ -30,9 +34,6 @@ struct ModesConstants {
     // Jump
     FP_LONG C0; // the "integral" evaluated at 0
     FP_LONG r; // basically a smoothness factor
-
-    FP_LONG accel_sub_1;
-    FP_LONG exp_sub_1;
 
     // Power
     FP_LONG offset_x;

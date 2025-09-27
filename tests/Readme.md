@@ -18,13 +18,13 @@ try { // The tests should be inside try-catch block
     TestManager::SetAcceleration(0.0001f); // Acceleration set to 0.0001 for example
     TestManager::UpdateModesConstants();
     
-    for (int i = 0; i < BASIC_TEST_STEPS; i++) {
-        float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
+    for (int i = 0; i < BASIC_TEST_STEPS; i++) { // Loop over some range of input values
+        float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS; // map values
         auto res = TestManager::Accel{ACCEL_MODE}(value);
     
-        supervisor.result &= IsAccelValueGood(res);
-        //supervisor.result &= IsCloseEnough(res, TestManager::EvalFloatFunc(value));
-        supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+        supervisor.Validate(IsAccelValueGood(res));
+        //supervisor.Validate(IsCloseEnough(res, TestManager::EvalFloatFunc(value)));
+        supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
     }
     
     ... // Other test cases

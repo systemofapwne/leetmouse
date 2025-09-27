@@ -17,14 +17,13 @@ int main() {
         }
     }
 
-    if (bad_sum == 0) {
-        printf(GREEN"All tests passed!\n" RESET);
-    }
-    else {
-        printf(RED"%i %s failed!\n", bad_sum, (bad_sum == 1) ? "test" : "tests");
-    }
+    bool arithmetic_test = Tests::TestFixedPointArithmetic();
 
-    // Tests::TestFixedPointArithmetic();
+    if (bad_sum == 0 && arithmetic_test) {
+        printf(GREEN"All tests passed!\n\n" RESET);
+    } else {
+        printf(RED"%i %s failed!\n\n", bad_sum, (bad_sum == 1) ? "test" : "tests");
+    }
 
     return 0;
 }

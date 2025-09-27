@@ -39,8 +39,8 @@ bool Tests::TestAccelLinear(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelLinear(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -55,8 +55,8 @@ bool Tests::TestAccelLinear(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelLinear(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -71,8 +71,8 @@ bool Tests::TestAccelLinear(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelLinear(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -87,8 +87,8 @@ bool Tests::TestAccelLinear(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelLinear(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -103,8 +103,8 @@ bool Tests::TestAccelLinear(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelLinear(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -115,12 +115,12 @@ bool Tests::TestAccelLinear(float range_min, float range_max) {
         TestManager::SetMidpoint(2.f);
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Linear mode\n", ex.what());
         supervisor.result = false;
     }
@@ -151,8 +151,8 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
             auto res = TestManager::AccelPower(value);
             //printf("%f, %f, %f\n", value, FP64_ToFloat(res), TestManager::EvalFloatFunc(value));
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -174,8 +174,8 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
             auto res = TestManager::AccelPower(value);
             //printf("%f, %f, %f\n", value, FP64_ToFloat(res), TestManager::EvalFloatFunc(value));
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -206,15 +206,15 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
             for (int j = 0; j < BASIC_TEST_STEPS_REDUCED; j++) {
                 float t2 = static_cast<float>(j) / BASIC_TEST_STEPS_REDUCED;
                 float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS_REDUCED;
-                auto res = TestManager::AccelPower(value, 1, lerp(0.1f, 1, t1), lerp(0.01f, 8, t2));
+                auto res = TestManager::AccelPower(value, 1, lerp(0.1f, 1, t1), lerp(0.01f, 8, t2), 0, false);
                 // printf("arg_a: %f, arg_b: %f\n", lerp(0.1f, 1, t1), lerp(0.01f, 8, t2));
                 // printf("%f, %f, %f\n", value, FP64_ToFloat(res), TestManager::EvalFloatFunc(value));
 
                 // auto modes_const = TestManager::GetModesConstants();
                 //printf("offset_x: %f, power_const: %f\n", FP64_ToFloat(modes_const.offset_x), FP64_ToFloat(modes_const.power_constant));
 
-                supervisor.result &= IsAccelValueGood(res);
-                supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+                supervisor.Validate(IsAccelValueGood(res));
+                supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
             }
         }
 
@@ -237,8 +237,8 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelPower(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -260,8 +260,8 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelPower(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -284,8 +284,8 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
             auto res = TestManager::AccelPower(value);
             // printf("x: %f, Fixed Point: %f, Floating Point: %f, error: %f, value%i\n", value, FP64_ToFloat(res), TestManager::EvalFloatFunc(value), FP64_ToFloat(res) - TestManager::EvalFloatFunc(value), IsAccelValueGood(res));
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
             // printf("Validation: %i\n", supervisor.result);
         }
 
@@ -299,7 +299,8 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
         TestManager::SetUseSmoothing(true);
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
@@ -324,8 +325,8 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
             auto res = TestManager::AccelPower(value);
             // printf("x: %f, Fixed Point: %f, Floating Point: %f, error: %f, value%i\n", value, FP64_ToFloat(res), TestManager::EvalFloatFunc(value), FP64_ToFloat(res) - TestManager::EvalFloatFunc(value), IsAccelValueGood(res));
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
             // printf("Validation: %i\n", supervisor.result);
         }
 
@@ -339,14 +340,12 @@ bool Tests::TestAccelPower(float range_min, float range_max) {
         TestManager::SetUseSmoothing(true);
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
-
-
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Power mode\n", ex.what());
         supervisor.result = false;
     }
@@ -368,8 +367,8 @@ bool Tests::TestAccelClassic(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelClassic(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -384,8 +383,8 @@ bool Tests::TestAccelClassic(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelClassic(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -400,8 +399,8 @@ bool Tests::TestAccelClassic(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelClassic(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -416,28 +415,28 @@ bool Tests::TestAccelClassic(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelClassic(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
         TestManager::SetAccelMode(AccelMode_Classic);
         TestManager::SetAcceleration(0.04f);
-	    TestManager::SetExponent(9.f);
-	    TestManager::SetMidpoint(5.f);
-	    TestManager::SetUseSmoothing(true);
+        TestManager::SetExponent(9.f);
+        TestManager::SetMidpoint(5.f);
+        TestManager::SetUseSmoothing(true);
         TestManager::UpdateModesConstants();
 
         for (int i = 0; i < BASIC_TEST_STEPS; i++) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelClassic(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
-        TestManager::SetAccelMode(AccelMode_Classic);	
+        TestManager::SetAccelMode(AccelMode_Classic);
         TestManager::SetAcceleration(0.001f);
         TestManager::SetExponent(4.f);
         TestManager::SetMidpoint(0.f);
@@ -448,11 +447,11 @@ bool Tests::TestAccelClassic(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelClassic(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
-        supervisor.NextTest(); 
+        supervisor.NextTest();
         TestManager::SetAccelMode(AccelMode_Classic);
         TestManager::SetAcceleration(0.4f);
         TestManager::SetExponent(0.f);
@@ -460,7 +459,8 @@ bool Tests::TestAccelClassic(float range_min, float range_max) {
         TestManager::SetUseSmoothing(true);
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
@@ -473,13 +473,12 @@ bool Tests::TestAccelClassic(float range_min, float range_max) {
         TestManager::SetUseSmoothing(true);
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
-
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Classic mode\n", ex.what());
         supervisor.result = false;
     }
@@ -502,11 +501,10 @@ bool Tests::TestAccelMotivity(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelMotivity(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Motivity mode\n", ex.what());
         supervisor.result = false;
     }
@@ -537,8 +535,8 @@ bool Tests::TestAccelSynchronous(float range_min, float range_max) {
             float x = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelSynchronous(x);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(x));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(x)));
 
             //printf("x: %f, res: %f, float: %f\n", x, FP64_ToFloat(res), TestManager::EvalFloatFunc(x));
         }
@@ -557,8 +555,8 @@ bool Tests::TestAccelSynchronous(float range_min, float range_max) {
             float x = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelSynchronous(x);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(x));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(x)));
 
             //printf("x: %f, res: %f, float: %f\n", x, FP64_ToFloat(res), TestManager::EvalFloatFunc(x));
         }
@@ -577,8 +575,8 @@ bool Tests::TestAccelSynchronous(float range_min, float range_max) {
             float x = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelSynchronous(x);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(x));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(x)));
         }
 
         supervisor.NextTest();
@@ -595,8 +593,7 @@ bool Tests::TestAccelSynchronous(float range_min, float range_max) {
             fprintf(stderr, "Valid constants (Should be invalid)\n");
             supervisor.result = false;
         }
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Synchronous mode\n", ex.what());
         supervisor.result = false;
     }
@@ -621,8 +618,8 @@ bool Tests::TestAccelNatural(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelNatural(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
             //printf("res: %f\n", FP64_ToFloat(res));
             //printf("val function: %f\n", TestManager::EvalFloatFunc(value));
         }
@@ -641,8 +638,8 @@ bool Tests::TestAccelNatural(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelNatural(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
             // printf("res: %f\n", FP64_ToFloat(res));
             // printf("val function: %f\n", TestManager::EvalFloatFunc(value));
         }
@@ -661,8 +658,8 @@ bool Tests::TestAccelNatural(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelNatural(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -675,7 +672,8 @@ bool Tests::TestAccelNatural(float range_min, float range_max) {
         TestManager::SetUseSmoothing(false);
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
@@ -690,11 +688,11 @@ bool Tests::TestAccelNatural(float range_min, float range_max) {
         TestManager::SetUseSmoothing(false);
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
-
     } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Natural mode\n", ex.what());
         supervisor.result = false;
@@ -719,8 +717,8 @@ bool Tests::TestAccelJump(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelJump(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -735,8 +733,8 @@ bool Tests::TestAccelJump(float range_min, float range_max) {
             float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
             auto res = TestManager::AccelJump(value);
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -746,7 +744,8 @@ bool Tests::TestAccelJump(float range_min, float range_max) {
         TestManager::SetExponent(0.01f); // Smoothness
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
@@ -758,12 +757,12 @@ bool Tests::TestAccelJump(float range_min, float range_max) {
         TestManager::SetExponent(0.0f); // Smoothness
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Jump mode\n", ex.what());
         return false;
     }
@@ -788,8 +787,8 @@ bool Tests::TestAccelLUT(float range_min, float range_max) {
 
             //printf("%f, %f, %f\n", value, FP64_ToFloat(res), TestManager::EvalFloatFunc(value));
 
-            supervisor.result &= IsAccelValueGood(res);
-            supervisor.result &= IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value));
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
         }
 
         supervisor.NextTest();
@@ -800,7 +799,8 @@ bool Tests::TestAccelLUT(float range_min, float range_max) {
         TestManager::SetLutData(values_x2, values_y2, sizeof(values_x2) / sizeof(float));
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
@@ -813,7 +813,8 @@ bool Tests::TestAccelLUT(float range_min, float range_max) {
         TestManager::SetLutData(values_x3, values_y3, sizeof(values_x3) / sizeof(float));
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
@@ -826,7 +827,8 @@ bool Tests::TestAccelLUT(float range_min, float range_max) {
         TestManager::SetLutData(values_x4, values_y4, sizeof(values_x4) / sizeof(float));
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
@@ -839,12 +841,12 @@ bool Tests::TestAccelLUT(float range_min, float range_max) {
         TestManager::SetLutData(values_x5, values_y5, sizeof(values_x5) / sizeof(float));
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) { // Should be invalid!
+        if (TestManager::ValidateConstants()) {
+            // Should be invalid!
             fprintf(stderr, "Valid constants (should be invalid)\n");
             supervisor.result = false;
         }
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in LUT mode\n", ex.what());
         return false;
     }
@@ -882,7 +884,7 @@ bool Tests::TestAccelMode(AccelMode mode, float range_min, float range_max) {
 }
 
 std::array<bool, AccelMode_Count> Tests::TestAllBasic(float range_min, float range_max) {
-    std::array<bool, AccelMode_Count> results {true}; // AccelMode_Current is always true
+    std::array<bool, AccelMode_Count> results{true}; // AccelMode_Current is always true
 
     for (int mode = 1; mode < AccelMode_Count; mode++) {
         results[mode] = TestAccelMode(static_cast<AccelMode>(mode), range_min, range_max);
@@ -901,7 +903,7 @@ bool Tests::TestFixedPointArithmetic() {
             float x = -30 + static_cast<float>(i) * 60 / BASIC_TEST_STEPS; // Range -10, 10
             auto val = FP64_Tanh(FP64_FromFloat(x));
 
-            supervisor.result &= IsCloseEnough(val, std::tanh(x), 1e-4);
+            supervisor.Validate(IsCloseEnough(val, std::tanh(x), 1e-4));
 
             //printf("%f, %f,%f,%f\n", x, FP64_ToFloat(val), std::tanh(x), FP64_ToFloat(val) - std::tanh(x));
         }
@@ -913,7 +915,7 @@ bool Tests::TestFixedPointArithmetic() {
 
             auto val = FP64_Ilogb(FP64_FromFloat(x));
 
-            supervisor.result &= IsCloseEnough(FP64_FromInt(val), std::ilogb(x), 1e-1);
+            supervisor.Validate(IsCloseEnough(FP64_FromInt(val), std::ilogb(x), 1e-1));
 
             //printf("%f, %i,%i,%i\n", x, val, std::ilogb(x), val - std::ilogb(x));
         }
@@ -926,14 +928,13 @@ bool Tests::TestFixedPointArithmetic() {
                 int x2 = -10 + j * 20 / 20;
                 auto val = FP64_Scalbn(FP64_FromFloat(x1), x2);
 
-                //supervisor.result &= IsAccelValueGood(val);
-                supervisor.result &= IsCloseEnough(val, std::scalbln(x1, x2), 1e-4);
+                //supervisor.Validate(IsAccelValueGood(val));
+                supervisor.Validate(IsCloseEnough(val, std::scalbln(x1, x2), 1e-4));
 
                 //printf("(%f, %i), %f,%f,%f\n", x1, x2, FP64_ToFloat(val), std::scalbln(x1, x2), FP64_ToFloat(val) - std::scalbln(x1, x2));
             }
         }
-    }
-    catch (std::exception &ex) {
+    } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s during arithmetic\n", ex.what());
         supervisor.result = false;
     }
@@ -941,10 +942,15 @@ bool Tests::TestFixedPointArithmetic() {
     return supervisor.GetResult();
 }
 
+void Tests::TestSupervisor::Validate(bool res) {
+    if (result && !res) // Prints only on the first occurrence
+        printf(RED "Test failed!\n" RESET);
+
+    result &= res;
+}
+
 void Tests::TestSupervisor::NextTest() {
-    if (test_idx > 1) {
-        printf("Test #%d: %s\n" RESET, test_idx - 1, result ? GREEN "Passed" : RED "Failed");
-    }
+    TestPass();
 
     _result &= result;
     result = true;
@@ -952,11 +958,24 @@ void Tests::TestSupervisor::NextTest() {
     printf("Running test #%d for %s\n", test_idx, test_name);
 
     test_idx++;
+
+    start_time = std::chrono::steady_clock::now();
 }
 
 Tests::TestSupervisor::~TestSupervisor() {
+    TestPass();
+    printf("\n");
+}
+
+void Tests::TestSupervisor::TestPass() {
+    auto end_time = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+    auto seconds = duration.count() / 1000000;
+    auto millis = duration.count() / 1000;
+
     if (test_idx > 1) {
-        printf("Test #%d: %s\n\n" RESET, test_idx - 1, result ? GREEN "Passed" : RED "Failed");
+        printf("Test #%d: %s (%lds %ldms %lld\xC2\xB5s)\n" RESET, test_idx - 1, result ? GREEN "Passed" : RED "Failed",
+               seconds, millis, duration.count() % 1000);
     }
 }
 

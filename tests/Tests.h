@@ -6,6 +6,7 @@
 #include "../shared_definitions.h"
 #include "driver/config.h"
 #include "driver/FixedMath/Fixed64.h"
+#include <chrono>
 
 #define BASIC_TEST_STEPS 1000
 #define BASIC_TEST_STEPS_REDUCED 100
@@ -42,6 +43,7 @@ public:
     static bool TestAccelMode(AccelMode mode, float range_min = 0, float range_max = BASIC_TEST_RANGE_MAX);
 
     static std::array<bool, AccelMode_Count> TestAllBasic(float range_min = 0, float range_max = BASIC_TEST_RANGE_MAX);
+
     static bool TestFixedPointArithmetic();
 
 private:
@@ -50,17 +52,24 @@ private:
     class TestSupervisor {
         bool _result = true;
         int test_idx = 1;
-        const char* test_name;
+        const char *test_name;
+        std::chrono::steady_clock::time_point start_time;
 
     public:
-        explicit TestSupervisor(const char* test_name) : test_name(test_name) { };
+        explicit TestSupervisor(const char *test_name) : test_name(test_name) {
+        };
         bool GetResult() const { return _result & result; }
+
+        void Validate(bool res); // EXPECT_TRUE
 
         bool result = true;
 
         void NextTest();
 
         ~TestSupervisor();
+
+    private:
+        void TestPass();
     };
 
     static bool IsAccelValueGood(FP_LONG value);
@@ -69,7 +78,6 @@ private:
 
     static float lerp(float a, float b, float t);
 };
-
 
 
 #endif //TESTS_H

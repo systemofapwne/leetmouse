@@ -14,29 +14,28 @@
 #define DEG2RAD (M_PI / 180.0)
 
 namespace DriverHelper {
-    bool GetParameterF(const std::string& param_name, float& value);
-    bool GetParameterI(const std::string& param_name, int& value);
-    bool GetParameterB(const std::string& param_name, bool& value);
-    bool GetParameterS(const std::string& param_name, std::string& value);
+    bool GetParameterF(const std::string &param_name, float &value);
+    bool GetParameterI(const std::string &param_name, int &value);
+    bool GetParameterB(const std::string &param_name, bool &value);
+    bool GetParameterS(const std::string &param_name, std::string &value);
 
-    bool WriteParameterF(const std::string& param_name, float value);
-    bool WriteParameterI(const std::string& param_name, float value);
+    bool WriteParameterF(const std::string &param_name, float value);
+    bool WriteParameterI(const std::string &param_name, float value);
 
     bool SaveParameters();
 
     bool ValidateDirectory();
 
-    /// Converts the ugly FP64 representation of user parameters to nice floating point values.\n\n
-    bool CleanParameters(int& fixed_num);
+    /// Converts the ugly FP64 representation of user parameters to nice floating point values
+    bool CleanParameters(int &fixed_num);
 
     /// Returns the number of parsed values
-    size_t ParseUserLutData(char* user_data, double* out_x, double* out_y, size_t out_size);
+    size_t ParseUserLutData(char *user_data, double *out_x, double *out_y, size_t out_size);
 
     /// Returns the number of parsed values
-    size_t ParseDriverLutData(const char* user_data, double* out_x, double* out_y);
+    size_t ParseDriverLutData(const char *user_data, double *out_x, double *out_y);
 
     std::string EncodeLutData(double *data_x, double *data_y, size_t size);
-
 } // DriverHelper
 
 inline std::string AccelMode2String(AccelMode mode) {
@@ -125,7 +124,7 @@ inline AccelMode AccelMode_From_String(std::string mode_text) {
 
     // Bring text to lowercase
     std::transform(mode_text.begin(), mode_text.end(), mode_text.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+                   [](unsigned char c) { return std::tolower(c); });
 
     if (mode_text == "current")
         return AccelMode_Current;
@@ -150,7 +149,7 @@ inline AccelMode AccelMode_From_String(std::string mode_text) {
     return AccelMode_Current;
 }
 
-inline AccelMode AccelMode_From_EnumString(const std::string& mode_text) {
+inline AccelMode AccelMode_From_EnumString(const std::string &mode_text) {
     static_assert(AccelMode_Count == 10);
 
     if (mode_text == "AccelMode_Current")
@@ -176,7 +175,8 @@ inline AccelMode AccelMode_From_EnumString(const std::string& mode_text) {
 }
 
 struct Parameters {
-    float sens = 1.0f; // Sensitivity for X axis only if sens != sensY (anisotropy is on), otherwise sensitivity for both axes
+    float sens = 1.0f;
+    // Sensitivity for X axis only if sens != sensY (anisotropy is on), otherwise sensitivity for both axes
     float sensY = 1.0f; // Unused when anisotropy is off (sens == sensY)
     float outCap = 0.f;
     float inCap = 0.f;

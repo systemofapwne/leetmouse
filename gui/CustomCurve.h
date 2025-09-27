@@ -22,7 +22,7 @@ struct Ex_Vec2 : ImVec2 {
 class CustomCurve {
 public:
     std::deque<Ex_Vec2> points{{5, 1}, {50, 2}}; // actual points
-    std::deque<std::array<ImVec2, 2> > control_points{std::array<ImVec2, 2>({ImVec2{40, 1}, ImVec2{20, 2}})}; // control points
+    std::deque<std::array<ImVec2, 2> > control_points{std::array<ImVec2, 2>({ImVec2{40, 1}, ImVec2{20, 2}})};
     std::vector<ImPlotPoint> LUT_points{};
 
     CustomCurve() = default;

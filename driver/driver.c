@@ -69,7 +69,7 @@ static unsigned int driver_events(struct input_handle *handle, struct input_valu
         /* If we found no values to update, return */
         if (x == NONE_EVENT_VALUE && y == NONE_EVENT_VALUE && wheel == NONE_EVENT_VALUE)
             goto unchanged_return;
-        error = accelerate(&x, &y, &wheel);
+        error = accelerate(&x, &y);
         /* Reset state */
         state->x = NONE_EVENT_VALUE;
         state->y = NONE_EVENT_VALUE;

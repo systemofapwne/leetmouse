@@ -167,7 +167,7 @@ INLINE void update_params(ktime_t now)
 }
 
 // Acceleration happens here
-int accelerate(int *x, int *y, int *wheel)
+int accelerate(int *x, int *y)
 {
     FP_LONG delta_x, delta_y, ms, speed;
     //static long buffer_x = 0;

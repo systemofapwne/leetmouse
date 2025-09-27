@@ -29,8 +29,8 @@ float CachedFunction::SynchronousLegacy(float x) const {
 
     if (useClamp) {
         float L = gammaConst * (std::log(x) - logSync);
-        if (L < -1.0)   return minSens;
-        if (L > +1.0)   return maxSens;
+        if (L < -1.0) return minSens;
+        if (L > +1.0) return maxSens;
         return std::exp(L * logMot);
     }
     if (x == params->accel) {
@@ -52,7 +52,7 @@ bool CachedFunction::SynchronousBuildLUT() {
 
     // integrate synchronousLegacy in small steps:
     float sum = 0.0;
-    float a   = 0.0;
+    float a = 0.0;
 
     for (int e = 0; e < SynchronousData::stop - SynchronousData::start; ++e) {
         float expScale = std::scalbn(1.0, e + SynchronousData::start) / static_cast<float>(SynchronousData::num);
@@ -88,13 +88,13 @@ float CachedFunction::SynchronousGainEval(float x) const {
 
     // fractional part in [0,1)
     float frac = std::scalbn(x, -e) - 1.0;
-    float idxF = SynchronousData::num * ( (e - SynchronousData::start) + frac);
+    float idxF = SynchronousData::num * ((e - SynchronousData::start) + frac);
 
     int idx = std::min(static_cast<int>(std::floor(idxF)), SynchronousData::capacity - 2);
 
     float y;
     if (idx >= 0 && idx < SynchronousData::capacity - 1) {
-        y = lerp(synchronous_data.data[idx], synchronous_data.data[idx+1], idxF - idx);
+        y = lerp(synchronous_data.data[idx], synchronous_data.data[idx + 1], idxF - idx);
         if (SynchronousData::velocity) {
             y /= x;
         }
@@ -113,13 +113,12 @@ float CachedFunction::EvalFuncAt(float x) {
     static_assert(AccelMode_Count == 10);
 
     x *= params->preScale;
-    if(params->inCap > 0) {
+    if (params->inCap > 0) {
         x = fminf(x, params->inCap);
     }
     float val = 0;
     switch (params->accelMode) {
-        case AccelMode_Current:
-        {
+        case AccelMode_Current: {
             break;
         }
         case AccelMode_Linear: // Linear
@@ -141,7 +140,7 @@ float CachedFunction::EvalFuncAt(float x) {
                 // to a single constant expresion
                 // float m = cap_y / 2;
                 // float constant = (m - cap_y) * cap_x;
-                float constant = - cap_y * cap_x / 2;
+                float constant = -cap_y * cap_x / 2;
                 if (x < cap_x) {
                     val = sign * x * params->accel + 1.0;
                 } else {
@@ -167,14 +166,15 @@ float CachedFunction::EvalFuncAt(float x) {
                     // params->exponent) + (power_constant / cap_x); float
                     // constant = (m - cap_y) * cap_x;
                     // those expresions were simplified into:
-                    float constant = std::pow(cap_x * params->accel, params->exponent) * cap_x + power_constant - cap_x * cap_y;
+                    float constant = std::pow(cap_x * params->accel, params->exponent) * cap_x + power_constant - cap_x
+                                     * cap_y;
                     if (x < cap_x) {
                         val = std::pow(x * params->accel, params->exponent) + (power_constant / x);
                     } else {
                         val = constant / x + cap_y;
                     }
                 } else {
-                  val = std::pow(x * params->accel, params->exponent) + (power_constant / x);
+                    val = std::pow(x * params->accel, params->exponent) + (power_constant / x);
                 }
             }
             //val = std::pow(x * params->accel, params->exponent) + (((std::pow(params->midpoint / (params->exponent + 1), 1 / params->exponent) / params->accel) * params->midpoint * params->exponent / (params->exponent + 1)) / x);
@@ -214,12 +214,10 @@ float CachedFunction::EvalFuncAt(float x) {
             val = (params->accel - 1) / (1 + std::exp(params->midpoint - x)) + 1;
             break;
         }
-        case AccelMode_Synchronous:
-        {
+        case AccelMode_Synchronous: {
             if (params->useSmoothing) {
                 val = SynchronousGainEval(x);
-            }
-            else {
+            } else {
                 val = SynchronousLegacy(x);
             }
             break;
@@ -251,11 +249,10 @@ float CachedFunction::EvalFuncAt(float x) {
             // Might cause issues with high exponent's argument values
             double exp_param = smoothness * (params->midpoint - x);
             double D = std::exp(exp_param);
-            if(params->useSmoothing) {
+            if (params->useSmoothing) {
                 double integral = (params->accel - 1) * (x + (log(1 + D) / smoothness));
                 val = ((integral - C0) / x) + 1;
-            }
-            else {
+            } else {
                 val = (params->accel - 1) / (1 + D) + 1;
             }
             break;
@@ -263,10 +260,10 @@ float CachedFunction::EvalFuncAt(float x) {
         case AccelMode_CustomCurve:
         case AccelMode_Lut: // LUT
         {
-            if(params->LUT_size == 0)
+            if (params->LUT_size == 0)
                 break;
 
-            if(x < params->LUT_data_x[0]) {
+            if (x < params->LUT_data_x[0]) {
                 val = params->LUT_data_y[0];
                 break;
             }
@@ -301,9 +298,9 @@ float CachedFunction::EvalFuncAt(float x) {
                 }
             }
 
-            int pos = std::min(best_point-1, (int)params->LUT_size - 2);
-            float p = params->LUT_data_y[(int)(pos)]; // p element
-            float p1 = params->LUT_data_y[(int)(pos) + 1]; // p + 1 element
+            int pos = std::min(best_point - 1, (int) params->LUT_size - 2);
+            float p = params->LUT_data_y[(int) (pos)]; // p element
+            float p1 = params->LUT_data_y[(int) (pos) + 1]; // p + 1 element
             // derived from this (lerp): frac * params->LUT_data_x[l + 1] + params->LUT_data_x[l] = x
             float frac = (x - params->LUT_data_x[pos]) / (params->LUT_data_x[pos + 1] - params->LUT_data_x[pos]);
 
@@ -313,8 +310,7 @@ float CachedFunction::EvalFuncAt(float x) {
             val = LERP(p, p1, frac);
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
     }
@@ -325,31 +321,25 @@ float CachedFunction::EvalFuncAt(float x) {
 void CachedFunction::PreCacheConstants() {
     // Pre-Cache constants
     switch (params->accelMode) {
-        case AccelMode_Current:
-        {
+        case AccelMode_Current: {
             break;
         }
-        case AccelMode_Linear:
-        {
+        case AccelMode_Linear: {
             break;
         }
-        case AccelMode_Power:
-        {
+        case AccelMode_Power: {
             offset_x = std::pow(params->midpoint / (params->exponent + 1), 1 / params->exponent) / params->accel;
             power_constant = offset_x * params->midpoint * params->exponent / (params->exponent + 1);
             //printf("offset_x = %f, constant = %f\n", offset_x, power_constant);
             break;
         }
-        case AccelMode_Classic:
-        {
+        case AccelMode_Classic: {
             break;
         }
-        case AccelMode_Motivity:
-        {
+        case AccelMode_Motivity: {
             break;
         }
-        case AccelMode_Synchronous:
-        {
+        case AccelMode_Synchronous: {
             if (params->useSmoothing)
                 SynchronousBuildLUT();
             break;
@@ -362,19 +352,17 @@ void CachedFunction::PreCacheConstants() {
             smoothness = (2 * M_PI) / (params->exponent * params->midpoint);
             //printf("sm = %.2f\n", smoothness);
             //C0 = params->accel * params->midpoint; // Fast approx
-            C0 = (params->accel - 1) * (smoothness * params->midpoint + std::log(1+std::exp(-smoothness * params->midpoint)))/smoothness;
+            C0 = (params->accel - 1) * (smoothness * params->midpoint + std::log(
+                                            1 + std::exp(-smoothness * params->midpoint))) / smoothness;
             break;
         }
-        case AccelMode_Lut:
-        {
+        case AccelMode_Lut: {
             break;
         }
-        case AccelMode_CustomCurve:
-        {
+        case AccelMode_CustomCurve: {
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
     }
@@ -384,8 +372,9 @@ void CachedFunction::PreCacheFunc() {
     PreCacheConstants();
 
     float x = -params->offset + 0.01;
-    for(int i = 0; i < PLOT_POINTS; i++) {
-        if(x < 0) { // skip offset
+    for (int i = 0; i < PLOT_POINTS; i++) {
+        if (x < 0) {
+            // skip offset
             values[i] = params->sens;
             values_y[i] = params->sensY;
             x += x_stride;
@@ -406,7 +395,8 @@ bool CachedFunction::ValidateSettings() {
     isValid = true;
 
     for (int i = 0; i < PLOT_POINTS; i++) {
-        if (std::isnan(values[i]) || std::isnan(values_y[i]) || std::isinf(values[i]) || std::isinf(values_y[i]) || values[i] > 1e5 || values_y[i] > 1e5) {
+        if (std::isnan(values[i]) || std::isnan(values_y[i]) || std::isinf(values[i]) || std::isinf(values_y[i]) ||
+            values[i] > 1e5 || values_y[i] > 1e5) {
             isValid = false;
             return isValid;
         }
