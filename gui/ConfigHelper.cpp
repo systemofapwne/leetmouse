@@ -67,7 +67,8 @@ namespace ConfigHelper {
             res_ss << "as_threshold=" << params.as_threshold << std::endl;
             res_ss << "as_angle=" << params.as_angle << std::endl;
             res_ss << "LUT_size=" << params.LUT_size << std::endl;
-            res_ss << "LUT_data=" << DriverHelper::EncodeLutData(params.LUT_data_x, params.LUT_data_y, params.LUT_size);
+            res_ss << "LUT_data=" << DriverHelper::EncodeLutData(params.LUT_data_x, params.LUT_data_y, params.LUT_size) << std::endl;
+            res_ss << "CC_data_aggregate=" << params.customCurve.ExportCustomCurve();
 
             if (save_to_file) {
                 auto out_path = SaveFile();
@@ -113,7 +114,8 @@ namespace ConfigHelper {
             res_ss << "#define ANGLE_SNAPPING_ANGLE " << (params.as_angle * DEG2RAD) << std::endl;
             res_ss << "#define LUT_SIZE " << params.LUT_size << std::endl;
             res_ss << "#define LUT_DATA " << DriverHelper::EncodeLutData(
-                params.LUT_data_x, params.LUT_data_y, params.LUT_size);
+                params.LUT_data_x, params.LUT_data_y, params.LUT_size) << std::endl;
+            res_ss << "#define CC_DATA_AGGREGATE " << params.customCurve.ExportCustomCurve();
 
             if (save_to_file) {
                 auto out_path = SaveFile();
@@ -242,13 +244,15 @@ namespace ConfigHelper {
                 params.LUT_size = DriverHelper::ParseUserLutData(lut_data, params.LUT_data_x, params.LUT_data_y,
                                                                  params.LUT_size);
                 //DriverHelper::ParseDriverLutData(lut_data, params.LUT_data_x, params.LUT_data_y);
+            } else if (name == "cc_data_aggregate") {
+                params.customCurve.ImportCustomCurve(val_str);
             } else
                 unknown_params++;
 
             idx++;
         }
 
-        if (idx < 14 && unknown_params > 3 || unknown_params == idx) {
+        if ((idx < 14 && unknown_params > 3) || unknown_params == idx) {
             printf("Bad config format, missing parameters\n");
             return {};
         }

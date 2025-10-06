@@ -38,7 +38,7 @@ AccelMode used_mode = AccelMode_Linear;
 bool was_initialized = false;
 bool has_privilege = false;
 
-static char LUT_user_data[4096];
+static char LUT_user_data[MAX_LUT_BUF_LEN];
 
 void ResetParameters();
 
@@ -110,8 +110,8 @@ int OnGui() {
                         // Preserve the custom curve points when copying
                         CustomCurve curve = params[AccelMode_CustomCurve].customCurve;
                         params[i] = imported_params;
-                        params[i].customCurve = curve;
-                        params[i].accelMode = AccelMode_Lut;
+                        if (imported_params.customCurve.points.size() <= 1)
+                            params[i].customCurve = curve;
 
                         params[i].LUT_size = params[i].customCurve.ExportCurveToLUT(
                             params[i].LUT_data_x, params[i].LUT_data_y);
@@ -961,10 +961,6 @@ void ResetParameters(void) {
     for (int mode = 0; mode < NUM_MODES; mode++) {
         params[mode] = start_params;
         params[mode].accelMode = static_cast<AccelMode>(mode == 0 ? used_mode : mode);
-        if (mode == AccelMode_CustomCurve) {
-            params[mode].accelMode = AccelMode_Lut;
-            // Custom curve is saved just like LUT, the only distinction is on the GUI side
-        }
 
         if (mode == AccelMode_Lut) {
             memcpy(params[mode].LUT_data_x, start_params.LUT_data_x,
@@ -1053,6 +1049,14 @@ int main() {
         DriverHelper::GetParameterS("LutDataBuf", Lut_dataBuf);
         Lut_dataBuf.copy(LUT_user_data, sizeof(LUT_user_data), 0);
         DriverHelper::ParseDriverLutData(Lut_dataBuf.c_str(), start_params.LUT_data_x, start_params.LUT_data_y);
+
+        // Load custom curve data
+        Lut_dataBuf.clear();
+        DriverHelper::GetParameterS("_CustomCurveDataAggregate", Lut_dataBuf);
+        if (!start_params.customCurve.ImportCustomCurve(Lut_dataBuf) && start_params.accelMode == AccelMode_CustomCurve) {
+            fprintf(stderr, "Could not load custom curve data\n");
+            start_params.accelMode = AccelMode_Lut;
+        }
 
         start_params.use_anisotropy = start_params.sensY != start_params.sens;
 

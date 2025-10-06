@@ -69,6 +69,11 @@ PARAM_UL(LutSize,       LUT_SIZE,           "LUT data array size");
 //PARAM_F(LutStride,      LUT_STRIDE,       "Distance between y values for the LUT");
 PARAM_ARR(LutDataBuf,   LUT_DATA,           "Data of the LUT stored in a human form"); // g_LutDataBuf should not be used!
 
+#ifndef CC_DATA_AGGREGATE
+#define CC_DATA_AGGREGATE // Just so it doesn't cause any issues for older config versions
+#endif
+PARAM_ARR(_CustomCurveDataAggregate, CC_DATA_AGGREGATE, "Stores the Custom Curve data, SHOULD NOT BE USED ON THE DRIVER SIDE");
+
 PARAM_F(RotationAngle, ROTATION_ANGLE,      "Amount of clockwise rotation (in radians)");
 PARAM_F(AngleSnap_Threshold, ANGLE_SNAPPING_THRESHOLD,      "Rotation value at which angle snapping is triggered (in radians)");
 PARAM_F(AngleSnap_Angle, ANGLE_SNAPPING_ANGLE,      "Amount of clockwise rotation for angle snapping (in radians)");
@@ -151,10 +156,10 @@ INLINE void update_params(ktime_t now)
         g_LutSize = 0;
 
     // Sanity check
-    if(g_LutSize <= 1 && g_AccelerationMode == AccelMode_Lut)
+    if(g_LutSize <= 1 && (g_AccelerationMode == AccelMode_Lut || g_AccelerationMode == AccelMode_CustomCurve))
         g_AccelerationMode = AccelMode_Current;
 
-    if (g_AccelerationMode == AccelMode_Lut &&
+    if ((g_AccelerationMode == AccelMode_Lut || g_AccelerationMode == AccelMode_CustomCurve) &&
         (g_LutData_x[g_LutSize-1] == g_LutData_x[g_LutSize-2] && g_LutData_y[g_LutSize-1] == g_LutData_y[g_LutSize-2]))
         g_AccelerationMode = AccelMode_Current;
 

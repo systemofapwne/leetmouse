@@ -26,3 +26,6 @@
 #define MOTIVITY 1.5
 #define EXPONENT 0.2
 #define USE_SMOOTHING 1 // 1 - True, 0 - False
+
+// Custom Curve (Not used on the driver side)
+#define CC_DATA_AGGREGATE

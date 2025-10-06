@@ -204,8 +204,8 @@ void update_constants(void) {
     }
 
     // Lut (Validation)
-    if (g_AccelerationMode == AccelMode_Lut) {
-        if (g_LutSize <= 1|| g_LutData_x[g_LutSize-1] == g_LutData_x[g_LutSize-2])
+    if (g_AccelerationMode == AccelMode_Lut || g_AccelerationMode == AccelMode_CustomCurve) {
+        if (g_LutSize <= 1 || g_LutData_x[g_LutSize-1] == g_LutData_x[g_LutSize-2])
             g_AccelerationMode = AccelMode_Current;
     }
 
