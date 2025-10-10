@@ -1,3 +1,6 @@
+* About this fork
+  This is a fork of [[https://github.com/systemofapwne/leetmouse][Leetmouse]] I quickly made to fix some stability problems I had with Leetmouse. Compared to Leetmouse, it lacks updating acceleration parameters while the module is running. Other than that, its a fully working implementation of Leetmouse. This version also adds sensor rotation, but its not very accurate. This fork won't be updated anymore because I found [[https://github.com/AndyFilter/YeetMouse][YeetMouse]] to be much better, and I don't like working on kernel code.
+
 * Description
   The =LEETMOUSE= kernelmodule enables quake-live like acceleration for your mouse on Linux and is heavily inspired by previous works from [[http://accel.drok-radnik.com/old.html][Povohat's mouse driver for Windows.]]
   =LEETMOUSE= basically fuses the original [[https://github.com/torvalds/linux/blob/master/drivers/hid/usbhid/usbmouse.c][Linux USB mouse driver]] code with the acceleration code-base and has been initially developed by [[https://github.com/chilliams][Christopher Williams]].
