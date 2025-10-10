@@ -102,7 +102,7 @@ void accelerate(int *x, int *y, int *wheel)
     static fixedpt carry_whl = fixedpt_rconst(0.0);
     static fixedpt last_ms = fixedpt_rconst(1.0);
     static ktime_t last;
-    // static char fixedpt_dbg_str[20] = {0};
+    static char fixedpt_dbg_str[20] = {0};
     ktime_t now;
 
     accel_sens = g_Sensitivity;
@@ -113,13 +113,17 @@ void accelerate(int *x, int *y, int *wheel)
 
     //Calculate frametime
     now = ktime_get();
-    ms = fixedpt_div(fixedpt_fromint(now - last), fixedpt_fromint(1000*1000));
+		ktime_t us = (now - last) / 1000;
     last = now;
-    // Try to correct overflows from large timestamp differences that don't fit in fixedpoint numbers
-    if (ms < fixedpt_fromint(0.0)) ms = fixedpt_div(fixedpt_fromint((now - last) / 1000), fixedpt_fromint(1000));
     // The condition below had to be changed from 1.0 -> 0.125 to make 4000 hz polling rate work. This should probably work up to 8000 hz.
-    if (ms < fixedpt_rconst(0.125)) ms = last_ms;        //Sometimes, urbs appear bunched -> Beyond µs resolution so the timing reading is plain wrong. Fallback to last known valid frametime
-    if (ms > fixedpt_fromint(100)) ms = fixedpt_rconst(100);    //Original InterAccel has 200 here. RawAccel rounds to 100. So do we.
+		if (us < 125) {
+			ms = last_ms; //Sometimes, urbs appear bunched -> Beyond µs resolution so the timing reading is plain wrong. Fallback to last known valid frametime
+		// Rawaccel caps frametimes above 100 ms down to 100. This is capping down to Q16.16 max (32 ms), because bigger µs values are hard to convert cleanly to Q16.16 fixed-point.
+		} else if (us > 32767) {
+			ms = fixedpt_rconst(32.767);
+		} else {
+			ms = fixedpt_div(fixedpt_fromint(us), fixedpt_fromint(1000));
+		}
     last_ms = ms;
 
     //Update acceleration parameters periodically
@@ -179,13 +183,14 @@ void accelerate(int *x, int *y, int *wheel)
         /*memset(fixedpt_dbg_str, 0, sizeof fixedpt_dbg_str);
         fixedpt_str(g_RotationAngle, fixedpt_dbg_str, -2);
         printk("Rotating by %s radians", fixedpt_dbg_str);*/
+				fixedpt old_delta_x = delta_x; fixedpt old_delta_y = delta_y;
         delta_x = fixedpt_sub(
-            fixedpt_mul(delta_x, g_RotationCosine),
-            fixedpt_mul(delta_y, g_RotationSine)
+            fixedpt_mul(old_delta_x, g_RotationCosine),
+            fixedpt_mul(old_delta_y, g_RotationSine)
         );
         delta_y = fixedpt_add(
-            fixedpt_mul(delta_x, g_RotationSine),
-            fixedpt_mul(delta_y, g_RotationCosine)
+            fixedpt_mul(old_delta_x, g_RotationSine),
+            fixedpt_mul(old_delta_y, g_RotationCosine)
         );
     }
     /*memset(fixedpt_dbg_str, 0, sizeof fixedpt_dbg_str);
