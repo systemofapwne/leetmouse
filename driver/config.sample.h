@@ -3,7 +3,7 @@
 
 // Global Parameters
 #define SENSITIVITY 1 // For compatibility this is named SENSITIVITY, but it really refers just to the X axis
-#define SENSITIVITY_Y 1 // Only applied when this differs from the SENSITIVITY parameter
+#define SENSITIVITY_Y 1 // Ratio Y/X
 #define OUTPUT_CAP 0
 #define INPUT_CAP 0
 #define OFFSET 0

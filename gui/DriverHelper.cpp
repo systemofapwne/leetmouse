@@ -300,7 +300,7 @@ namespace DriverHelper {
         std::string res;
 
         for (int i = 0; i < size * 2; i++) {
-            res += std::to_string(i % 2 == 0 ? data_x[i / 2] : data_y[i / 2]) + ";";
+            res += std::to_string(i % 2 == 0 ? data_x[i / 2] : data_y[i / 2]) + (i % 2 == 0 ? "," : ";");
         }
 
         return res;

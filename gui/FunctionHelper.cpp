@@ -383,7 +383,7 @@ void CachedFunction::PreCacheFunc() {
         float val = EvalFuncAt(x);
         values[i] = val; // fabsf(params->outCap) > 0.01 ? fminf(val, params->outCap) : val;
         if (params->use_anisotropy)
-            values_y[i] = val / params->sens * params->sensY;
+            values_y[i] = val * params->sensY;
         x += x_stride;
     }
 
@@ -412,7 +412,7 @@ bool CachedFunction::ValidateSettings() {
         isValid = false;
 
     if (params->accelMode == AccelMode_Lut) {
-        for (int i = 0; i < MAX_LUT_ARRAY_SIZE; i++) {
+        for (int i = 0; i < params->LUT_size; i++) {
             if (std::isnan(params->LUT_data_x[i]) || std::isnan(params->LUT_data_y[i])) {
                 isValid = false;
                 return isValid;
