@@ -34,8 +34,8 @@ public:
 
 private:
     // Constant parameters for Jump
-    float smoothness = 0;
-    float C0 = 0;
+    double smoothness = 0;
+    double C0 = 0;
 
     // Power
     float offset_x = 0;

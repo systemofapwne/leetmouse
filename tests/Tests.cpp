@@ -740,6 +740,7 @@ bool Tests::TestAccelJump(float range_min, float range_max) {
         supervisor.NextTest();
 
         TestManager::SetAccelMode(AccelMode_Jump);
+        TestManager::SetAcceleration(4.f);
         TestManager::SetMidpoint(0.00f);
         TestManager::SetExponent(0.01f); // Smoothness
         TestManager::UpdateModesConstants();
@@ -753,14 +754,69 @@ bool Tests::TestAccelJump(float range_min, float range_max) {
         supervisor.NextTest();
 
         TestManager::SetAccelMode(AccelMode_Jump);
+        TestManager::SetAcceleration(4.f);
         TestManager::SetMidpoint(0.01f);
         TestManager::SetExponent(0.0f); // Smoothness
         TestManager::UpdateModesConstants();
 
-        if (TestManager::ValidateConstants()) {
-            // Should be invalid!
-            fprintf(stderr, "Valid constants (should be invalid)\n");
-            supervisor.result = false;
+        for (int i = 0; i < BASIC_TEST_STEPS; i++) {
+            float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
+            auto res = TestManager::AccelJump(value);
+
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
+        }
+
+        supervisor.NextTest();
+
+        TestManager::SetAccelMode(AccelMode_Jump);
+        TestManager::SetAcceleration(4.f);
+        TestManager::SetMidpoint(0.01f);
+        TestManager::SetExponent(0.0f); // Smoothness
+        TestManager::SetUseSmoothing(true);
+        TestManager::UpdateModesConstants();
+
+        for (int i = 0; i < BASIC_TEST_STEPS; i++) {
+            float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
+            auto res = TestManager::AccelJump(value);
+
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
+        }
+
+        supervisor.NextTest();
+
+        TestManager::SetAccelMode(AccelMode_Jump);
+        TestManager::SetAcceleration(4.f);
+        TestManager::SetMidpoint(0.01f);
+        TestManager::SetExponent(0.0f); // Smoothness
+        TestManager::SetUseSmoothing(true);
+        TestManager::UpdateModesConstants();
+
+        for (int i = 0; i < BASIC_TEST_STEPS; i++) {
+            float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS;
+            auto res = TestManager::AccelJump(value);
+
+            supervisor.Validate(IsAccelValueGood(res));
+            supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
+        }
+
+        supervisor.NextTest();
+
+        for (int i = 0; i < BASIC_TEST_STEPS_REDUCED; i++) {
+            float t1 = static_cast<float>(i) / BASIC_TEST_STEPS_REDUCED;
+            for (int j = 0; j < BASIC_TEST_STEPS_REDUCED; j++) {
+                float t2 = static_cast<float>(j) / BASIC_TEST_STEPS_REDUCED;
+                float value = range_min + static_cast<float>(i) * (range_max - range_min) / BASIC_TEST_STEPS_REDUCED;
+
+                auto res = TestManager::AccelJump(value, 5, LERP(0, 1, t1), LERP(0.01, 50, t2), i % 2 == 0);
+
+                // printf("exp = %f, midpoint = %f\n", LERP(0, 1, t1), LERP(0.01, 50, t2));
+                // printf("x: %f, res: %f, float: %f\n", value, FP64_ToFloat(res), TestManager::EvalFloatFunc(value));
+
+                supervisor.Validate(IsAccelValueGood(res));
+                supervisor.Validate(IsCloseEnoughRelative(res, TestManager::EvalFloatFunc(value)));
+            }
         }
     } catch (std::exception &ex) {
         fprintf(stderr, "Exception: %s, in Jump mode\n", ex.what());

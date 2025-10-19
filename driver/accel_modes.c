@@ -120,22 +120,29 @@ void update_constants(void) {
 
     // Jump
     if (g_AccelerationMode == AccelMode_Jump) {
-        if (g_Exponent == 0 || g_Midpoint == 0) {
-            printk("YeetMouse: Error: Acceleration mode 'Jump' is not supported for exponent 0 or midpoint 0.\n");
-            g_Exponent = 1;
-            g_Midpoint = 1;
+        if (g_Midpoint == 0) {
+            printk("YeetMouse: Error: Acceleration mode 'Jump' is not supported for midpoint 0.\n");
+            g_Midpoint = FP64_1;
             g_Acceleration = 0;
             g_AccelerationMode = AccelMode_Current;
         }
         else {
-            modesConst.r = FP64_DivPrecise(FP64_Mul(Two, Pi), FP64_Mul(g_Exponent, g_Midpoint));
+            FP_LONG smooth_inv = FP64_Mul(g_Exponent, g_Midpoint);
+            if (smooth_inv < FP64_1)
+                modesConst.r = 0;
+            else
+                modesConst.r = FP64_DivPrecise(Pi2, smooth_inv);
+
             FP_LONG r_times_m = FP64_Mul(modesConst.r, g_Midpoint);
 
+            if (modesConst.r == 0) {
+                modesConst.C0 = FP64_1;
+            }
             // Safely exponentiate without overflow (ln(1+exp(x)) when x -> 'inf' = ln(exp(x)) = x. (in practice works for x >= 8))
-            if (r_times_m < (EXP_ARG_THRESHOLD << FP64_Shift))
-                modesConst.C0 = FP64_Mul(FP64_DivPrecise(FP64_Log(FP64_Add(1, FP64_Exp(r_times_m))), modesConst.r), modesConst.accel_sub_1);
+            else if (r_times_m < (EXP_ARG_THRESHOLD << FP64_Shift))
+                modesConst.C0 = FP64_Mul(modesConst.accel_sub_1, FP64_DivPrecise(FP64_Log(FP64_Add(FP64_1, FP64_Exp(r_times_m))), modesConst.r));
             else
-                modesConst.C0 = FP64_Mul(modesConst.accel_sub_1, g_Midpoint);
+                modesConst.C0 = FP64_Mul(modesConst.accel_sub_1, FP64_DivPrecise(r_times_m, modesConst.r));
         }
     }
 
@@ -456,18 +463,33 @@ FP_LONG accel_jump(FP_LONG speed) {
     // Jump: Acceleration / (1 + exp(r(midpoint - x))) + 1
     // Smooth: Integral of the above divided by x pretty much
 
+    if (speed <= 0)
+        return FP64_1;
+
     FP_LONG exp_arg = FP64_Mul(modesConst.r, FP64_Sub(g_Midpoint, speed));
-    FP_LONG D = FP64_ExpFast(exp_arg);
+    FP_LONG D = FP64_Exp(exp_arg);
 
     if(g_UseSmoothing) { // smooth
-        FP_LONG natural_log = exp_arg > (EXP_ARG_THRESHOLD << FP64_Shift) ? exp_arg : FP64_LogFast(FP64_Add(FP64_1, D));
-        FP_LONG integral = FP64_Mul(modesConst.accel_sub_1, FP64_Add(speed, FP64_DivPrecise(natural_log, modesConst.r)));
-        // Not really an integral
-        speed = FP64_Add(FP64_DivPrecise(FP64_Sub(integral, modesConst.C0), speed), FP64_1);
+        if (modesConst.r != 0) {
+            FP_LONG natural_log = exp_arg > (EXP_ARG_THRESHOLD << FP64_Shift) ? exp_arg : FP64_Log(FP64_Add(FP64_1, D));
+            FP_LONG integral = FP64_Mul(modesConst.accel_sub_1, FP64_Add(speed, FP64_DivPrecise(natural_log, modesConst.r)));
+            // Not really an integral
+            speed = FP64_Add(FP64_DivPrecise(FP64_Sub(integral, modesConst.C0), speed), FP64_1);
+        }
+        else if (speed <= g_Midpoint)
+            speed = FP64_1;
+        else
+            speed = FP64_Add(FP64_DivPrecise(FP64_Mul(modesConst.accel_sub_1, FP64_Sub(speed, g_Midpoint)), speed), FP64_1);
     }
     else {
-        speed = FP64_Add(FP64_DivPrecise(modesConst.accel_sub_1, FP64_Add(FP64_1, D)), FP64_1);
+        if (modesConst.r != 0)
+            speed = FP64_Add(FP64_DivPrecise(modesConst.accel_sub_1, FP64_Add(FP64_1, D)), FP64_1);
+        else if (speed <= g_Midpoint)
+            speed = FP64_1;
+        else
+            speed = FP64_Add(modesConst.accel_sub_1, FP64_1);
     }
+
     return speed;
 }
 

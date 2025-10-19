@@ -341,14 +341,14 @@ int OnGui() {
                                            "Acceleration %0.2f");
                 change |= ImGui::DragFloat("##MidPoint_Param", &params[selected_mode].midpoint, 0.05, 0.1, 50,
                                            "Start %0.2f");
-                change |= ImGui::DragFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 0.01, 1,
+                change |= ImGui::DragFloat("##Exp_Param", &params[selected_mode].exponent, 0.0, 0.01, 1,
                                            "Smoothness %0.2f");
 #else
                 change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0, 10,
                                              "Acceleration %0.2f");
                 change |= ImGui::SliderFloat("##MidPoint_Param", &params[selected_mode].midpoint, 0.1, 50,
                                              "Midpoint %0.2f");
-                change |= ImGui::SliderFloat("##Exp_Param", &params[selected_mode].exponent, 0.01, 1,
+                change |= ImGui::SliderFloat("##Exp_Param", &params[selected_mode].exponent, 0.0, 1,
                                              "Smoothness %0.2f");
 #endif
                 change |= ImGui::Checkbox("##Smoothing_Param", &params[selected_mode].useSmoothing);

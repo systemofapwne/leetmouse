@@ -2,6 +2,8 @@
 
 #include "FunctionHelper.h"
 
+#define EXP_ARG_THRESHOLD 16ll
+
 CachedFunction::CachedFunction(float xStride, Parameters *params)
         : x_stride(xStride), params(params) { }
 
@@ -246,14 +248,32 @@ float CachedFunction::EvalFuncAt(float x) {
         }
         case AccelMode_Jump: // Jump
         {
+            if (x <= 0) {
+                val = 1;
+                break;
+            }
+
+            //
             // Might cause issues with high exponent's argument values
-            double exp_param = smoothness * (params->midpoint - x);
-            double D = std::exp(exp_param);
+            double exp_param = smoothness * (params->midpoint - x); // smooth_rate * (step.x - x)
+            double D = std::exp(exp_param); // exp()
             if (params->useSmoothing) {
-                double integral = (params->accel - 1) * (x + (log(1 + D) / smoothness));
-                val = ((integral - C0) / x) + 1;
+                if (smoothness != 0) {
+                    double log_val = exp_param > EXP_ARG_THRESHOLD ? exp_param : log(1 + D);
+                    double integral = (params->accel - 1) * (x + (log_val / smoothness)); // (step.y * (x + log(1 + ()) / smooth_rate)
+                    val = 1 + (integral - C0) / x; // 1 + (() + C) / x;
+                }
+                else if (x <= params->midpoint)
+                    val = 1;
+                else
+                    val = 1 + (params->accel - 1) * (x - params->midpoint) / x;
             } else {
-                val = (params->accel - 1) / (1 + D) + 1;
+                if (smoothness != 0)
+                    val = (params->accel - 1) / (1 + D) + 1;
+                else if (x <= params->midpoint)
+                    val = 1;
+                else
+                    val = (params->accel - 1) + 1;
             }
             break;
         }
@@ -349,11 +369,21 @@ void CachedFunction::PreCacheConstants() {
         }
         case AccelMode_Jump: {
             //printf("exp = %.2f, mid = %.2f\n", params->exponent, params->midpoint);
-            smoothness = (2 * M_PI) / (params->exponent * params->midpoint);
+            double rate_inverse = params->exponent * params->midpoint;
+            if (rate_inverse < 1.0)
+                smoothness = 0;
+            else
+                smoothness = (2 * M_PI) / rate_inverse;
+
+            double r_times_m = smoothness * params->midpoint;
             //printf("sm = %.2f\n", smoothness);
-            //C0 = params->accel * params->midpoint; // Fast approx
-            C0 = (params->accel - 1) * (smoothness * params->midpoint + std::log(
-                                            1 + std::exp(-smoothness * params->midpoint))) / smoothness;
+            //      step.y *                (log(        1 + exp(       smooth_rate * step.x))          / smooth_rate);
+            if (smoothness == 0)
+                C0 = 1;
+            else if (r_times_m < EXP_ARG_THRESHOLD)
+                C0 = (params->accel - 1) * (std::log(1 + std::exp(r_times_m))) / smoothness;
+            else
+                C0 = (params->accel - 1) * r_times_m / smoothness;
             break;
         }
         case AccelMode_Lut: {
@@ -402,7 +432,7 @@ bool CachedFunction::ValidateSettings() {
         }
     }
 
-    if (params->exponent <= 0)
+    if (params->exponent <= 0 && params->accelMode != AccelMode_Jump)
         isValid = false;
 
     if (params->accel <= 0)
