@@ -182,7 +182,7 @@ int OnGui() {
         change |= ImGui::DragFloat("##OutCap_Param", &params[selected_mode].outCap, 0.05, 0, 100, "Output Cap. %0.2f");
         change |= ImGui::DragFloat("##InCap_Param", &params[selected_mode].inCap, 0.1, 0, 200, "Input Cap. %0.2f");
         change |= ImGui::DragFloat("##Offset_Param", &params[selected_mode].offset, 0.05, -50, 50, "Offset %0.2f");
-        change |= ImGui::DragFloat("##PreScale_Param", &params[selected_mode].preScale, 0.01, 0.01, 10, "Pre-Scale %0.2f");
+        bool pre_scale_change = ImGui::DragFloat("##PreScale_Param", &params[selected_mode].preScale, 0.01, 0.01, 10, "Pre-Scale %0.2f");
 #else
         if (params[selected_mode].use_anisotropy) {
             change |= ImGui::SliderFloat("##Sens_Param", &params[selected_mode].sens, 0.005, 5, "Sensitivity X %.3f");
@@ -192,9 +192,31 @@ int OnGui() {
         change |= ImGui::SliderFloat("##OutCap_Param", &params[selected_mode].outCap, 0, 5, "Output Cap. %0.2f");
         change |= ImGui::SliderFloat("##InCap_Param", &params[selected_mode].inCap, 0, 120, "Input Cap. %0.2f");
         change |= ImGui::SliderFloat("##Offset_Param", &params[selected_mode].offset, -50, 50, "Offset %0.2f");
-        change |= ImGui::SliderFloat("##PreScale_Param", &params[selected_mode].preScale, 0.01, 10, "Pre-Scale %0.2f");
+        bool pre_scale_change = ImGui::SliderFloat("##PreScale_Param", &params[selected_mode].preScale, 0.01, 10, "Pre-Scale %0.2f");
 #endif
-        ImGui::SetItemTooltip("Used to adjust for different DPI values (Set to 800/DPI)");
+        if (pre_scale_change) {
+            PLOT_X_RANGE = 150 / params[selected_mode].preScale;
+            for (int i = 1; i < NUM_MODES; i++) {
+                functions[i] = CachedFunction(((float) PLOT_X_RANGE) / PLOT_POINTS, &params[i]);
+                functions[i].PreCacheFunc();
+            }
+            change |= pre_scale_change;
+        }
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip) && ImGui::BeginTooltip()) {
+            ImGui::Text(
+                "Used to adjust for different DPI values (Set to 800/DPI)");
+            float item_width = ImGui::GetItemRectSize().x;
+            static const float text_width{ImGui::CalcTextSize("Currently configured for 100 DPI").x};
+
+            ImGui::SetCursorPosX((item_width / 2) - (text_width / 2));
+
+            ImGui::Text("Currently configured for %i DPI",
+                        params[selected_mode].preScale == 0
+                            ? 0
+                            : static_cast<int>(800 / params[selected_mode].preScale));
+
+            ImGui::EndTooltip();
+        }
 
         ImGui::SeparatorText("Advanced");
 
@@ -858,8 +880,9 @@ int OnGui() {
                     ImPlot::SetNextMarkerStyle(-1, 2);
                     // Draw LUT points
                     ImPlot::PlotScatterG("LUT points", [](int idx, void *ud) {
-                        double x = static_cast<Parameters *>(ud)->LUT_data_x[idx];
-                        double y = static_cast<Parameters *>(ud)->LUT_data_y[idx];
+                        auto params = static_cast<Parameters *>(ud);
+                        double x = params->LUT_data_x[idx] / params->preScale;
+                        double y = params->LUT_data_y[idx];
                         return ImPlotPoint(x, y);
                     }, &params[selected_mode], params[selected_mode].LUT_size);
 
