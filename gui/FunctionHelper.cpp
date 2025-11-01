@@ -441,13 +441,23 @@ bool CachedFunction::ValidateSettings() {
     if (params->midpoint < 0)
         isValid = false;
 
-    if (params->accelMode == AccelMode_Lut) {
+    if (params->accelMode == AccelMode_Lut || params->accelMode == AccelMode_CustomCurve) {
+        if (params->LUT_size <= 1) {
+            isValid = false;
+            return isValid;
+        }
         for (int i = 0; i < MAX_LUT_ARRAY_SIZE; i++) {
             if (std::isnan(params->LUT_data_x[i]) || std::isnan(params->LUT_data_y[i])) {
                 isValid = false;
                 return isValid;
             }
         }
+    }
+
+    if (params->accelMode == AccelMode_CustomCurve) {
+        isValid = params->customCurve.points.size() >= 2;
+        if (!isValid)
+            return isValid;
     }
 
     if (params->accelMode == AccelMode_Classic) {

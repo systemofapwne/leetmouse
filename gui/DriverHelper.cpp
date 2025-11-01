@@ -38,7 +38,7 @@ bool GetParameterTy(const std::string &param_name, std::string &value) {
         using namespace std;
         ifstream file(YEETMOUSE_PARAMS_DIR + param_name);
 
-        if (file.bad())
+        if (file.bad() || file.fail())
             return false;
 
         std::stringstream ss;
@@ -297,13 +297,14 @@ namespace DriverHelper {
     }
 
     std::string EncodeLutData(double *data_x, double *data_y, size_t size) {
-        std::string res;
+        std::stringstream res;
+        res << std::setprecision(LUT_EXPORT_PRECISION);
 
         for (int i = 0; i < size * 2; i++) {
-            res += std::to_string(i % 2 == 0 ? data_x[i / 2] : data_y[i / 2]) + ";";
+            res << (i % 2 == 0 ? data_x[i / 2] : data_y[i / 2]) << ";";
         }
 
-        return res;
+        return res.str();
     }
 } // DriverHelper
 
@@ -317,13 +318,30 @@ namespace DriverHelper {
 bool Parameters::SaveAll() {
     bool res = true;
 
+    // LUT
+    auto encodedLutData = DriverHelper::EncodeLutData(LUT_data_x, LUT_data_y, LUT_size);
+    if (!encodedLutData.empty() && encodedLutData.size() < MAX_LUT_BUF_LEN) {
+        res &= SetParameterTy("LutSize", LUT_size);
+        //res &= SetParameterTy("LutStride", LUT_stride);
+        //printf("encoded: %s, size: %zu, stride: %i\n", encoded.c_str(), LUT_size, LUT_stride);
+        res &= SetParameterTy("LutDataBuf", encodedLutData);
+    } else if (accelMode == AccelMode_Lut || accelMode == AccelMode_CustomCurve)
+        return false;
+
+    // Custom Curve
+    auto encodedCCData = customCurve.ExportCustomCurve();
+    if (!encodedCCData.empty() && encodedCCData.size() < MAX_LUT_BUF_LEN) {
+        res &= SetParameterTy("_CustomCurveDataAggregate", encodedCCData);
+    }
+    else if (accelMode == AccelMode_CustomCurve)
+        return false;
+
     // General
     res &= SetParameterTy("Sensitivity", sens);
     res &= SetParameterTy("SensitivityY", use_anisotropy ? sensY : sens);
     res &= SetParameterTy("OutputCap", outCap);
     res &= SetParameterTy("InputCap", inCap);
     res &= SetParameterTy("Offset", offset);
-    res &= SetParameterTy("AccelerationMode", accelMode);
     res &= SetParameterTy("RotationAngle", rotation * DEG2RAD);
     res &= SetParameterTy("AngleSnap_Threshold", as_threshold * DEG2RAD);
     res &= SetParameterTy("AngleSnap_Angle", as_angle * DEG2RAD);
@@ -336,15 +354,7 @@ bool Parameters::SaveAll() {
     res &= SetParameterTy("PreScale", preScale);
     res &= SetParameterTy("UseSmoothing", useSmoothing);
 
-    // LUT
-    auto encodedLutData = DriverHelper::EncodeLutData(LUT_data_x, LUT_data_y, LUT_size);
-    if (!encodedLutData.empty()) {
-        res &= SetParameterTy("LutSize", LUT_size);
-        //res &= SetParameterTy("LutStride", LUT_stride);
-        //printf("encoded: %s, size: %zu, stride: %i\n", encoded.c_str(), LUT_size, LUT_stride);
-        res &= SetParameterTy("LutDataBuf", encodedLutData);
-    } else if (accelMode == AccelMode_Lut)
-        return false;
+    res &= SetParameterTy("AccelerationMode", accelMode);
 
     if (res)
         res &= DriverHelper::SaveParameters();
