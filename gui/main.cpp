@@ -115,6 +115,7 @@ int OnGui() {
 
                         params[i].LUT_size = params[i].customCurve.ExportCurveToLUT(
                             params[i].LUT_data_x, params[i].LUT_data_y);
+                        params[i].customCurve.ApplyCurveConstraints();
                         params[i].customCurve.UpdateLUT();
                     } else {
                         params[i] = imported_params;
@@ -565,12 +566,6 @@ int OnGui() {
             ImPlot::PlotLine("Function in use", functions[0].values, PLOT_POINTS, functions[0].x_stride);
         }
 
-        if (params[selected_mode].use_anisotropy) {
-            ImPlot::SetNextLineStyle(ImVec4(0.3, 0.3, 0.8, 1), 2);
-            ImPlot::PlotLine("Active Mode Y##ActivePlotY", functions[selected_mode].values_y, PLOT_POINTS,
-                             functions[selected_mode].x_stride);
-        }
-
         ImPlot::SetNextLineStyle(ImColor(0.3f, 0.5f, 0.7f, 1.0f), 2);
 
         if (selected_mode == AccelMode_CustomCurve) {
@@ -863,6 +858,12 @@ int OnGui() {
                         return ImPlotPoint(x, y);
                     }, &params[selected_mode], params[selected_mode].LUT_size);
 
+                    if (params[selected_mode].use_anisotropy) {
+                        ImPlot::SetNextLineStyle(ImVec4(0.3, 0.3, 0.8, 1), 1);
+                        ImPlot::PlotLine("Active Mode Y##ActivePlotY", functions[selected_mode].values_y, PLOT_POINTS,
+                                         functions[selected_mode].x_stride);
+                    }
+
                     ImPlot::PlotLine("##ActivePlot", functions[selected_mode].values, PLOT_POINTS,
                                      functions[selected_mode].x_stride);
                 }
@@ -872,9 +873,16 @@ int OnGui() {
             //              functions[selected_mode].x_stride);
 
             last_held_point = held_point;
-        } else
+        } else {
+            if (params[selected_mode].use_anisotropy) {
+                ImPlot::SetNextLineStyle(ImVec4(0.3, 0.3, 0.8, 1), 2);
+                ImPlot::PlotLine("Active Mode Y##ActivePlotY", functions[selected_mode].values_y, PLOT_POINTS,
+                                 functions[selected_mode].x_stride);
+            }
+
             ImPlot::PlotLine("##ActivePlot", functions[selected_mode].values, PLOT_POINTS,
                              functions[selected_mode].x_stride);
+        }
 
         ImPlot::PlotScatterG("Mouse Speed", [](int idx, void *data) { return *(ImPlotPoint *) data; }, &mousePoint_main,
                              1);
@@ -1052,10 +1060,16 @@ int main() {
 
         // Load custom curve data
         Lut_dataBuf.clear();
-        DriverHelper::GetParameterS("_CustomCurveDataAggregate", Lut_dataBuf);
-        if (!start_params.customCurve.ImportCustomCurve(Lut_dataBuf) && start_params.accelMode == AccelMode_CustomCurve) {
-            fprintf(stderr, "Could not load custom curve data\n");
-            start_params.accelMode = AccelMode_Lut;
+        if (DriverHelper::GetParameterS("_CustomCurveDataAggregate", Lut_dataBuf)) {
+            CustomCurve dummy_curve;
+            if (!dummy_curve.ImportCustomCurve(Lut_dataBuf) && start_params.accelMode == AccelMode_CustomCurve) {
+                fprintf(stderr, "Could not load custom curve data\n");
+                start_params.accelMode = AccelMode_Lut;
+            }
+
+            if (!dummy_curve.points.empty()) {
+                start_params.customCurve = dummy_curve;
+            }
         }
 
         start_params.use_anisotropy = start_params.sensY != start_params.sens;

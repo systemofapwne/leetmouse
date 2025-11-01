@@ -38,7 +38,7 @@ bool GetParameterTy(const std::string &param_name, std::string &value) {
         using namespace std;
         ifstream file(YEETMOUSE_PARAMS_DIR + param_name);
 
-        if (file.bad())
+        if (file.bad() || file.fail())
             return false;
 
         std::stringstream ss;
