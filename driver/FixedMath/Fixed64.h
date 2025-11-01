@@ -1563,7 +1563,7 @@ static int FP64_FromString(const char *buf, FP_LONG *val) {
     }
 
     /* Verify that there is no garbage left over */
-    while (*buf != '\0' && *buf != ';') {
+    while (*buf != '\0' && *buf != ';' && *buf != ',') {
         if (!_isdigit((unsigned char) *buf) && !_isspace((unsigned char) *buf))
             return 0;
 

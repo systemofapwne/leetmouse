@@ -141,7 +141,7 @@ INLINE void update_params(ktime_t now)
     int i = 0;
     for(; i < g_LutSize*2 && *p; i++) {
         FP_LONG val;
-        p += FP64_FromString(p, &val) + 1; // + 1 to skip the ';'
+        p += FP64_FromString(p, &val) + 1; // + 1 to skip the ';' or ','
         // The format for the driver side is very strict tho, so don't edit it by hand pls.
         ((i % 2 == 0) ? g_LutData_x : g_LutData_y)[i/2] = val;
 
@@ -276,7 +276,7 @@ int accelerate(int *x, int *y)
 
     // Actually apply accelerated sensitivity, allow post-scaling and apply carry from previous round
     // Like RawAccel, sensitivity will be a final multiplier:
-    if (g_Sensitivity == g_SensitivityY) {
+    if (g_SensitivityY == FP64_1) {
         if(g_Sensitivity != FP64_1)
             speed = FP64_Mul(speed, g_Sensitivity);
 
