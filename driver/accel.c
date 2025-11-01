@@ -10,6 +10,7 @@
 #include "FixedMath/Fixed64.h"
 #include "../shared_definitions.h"
 #include "accel_modes.h"
+#include "defaults.h"
 
 MODULE_AUTHOR("Christopher Williams <chilliams (at) gmail (dot) com>"); //Original idea of this module
 MODULE_AUTHOR("Klaus Zipfel <klaus (at) zipfel (dot) family>");         //Current maintainer
@@ -69,9 +70,6 @@ PARAM_UL(LutSize,       LUT_SIZE,           "LUT data array size");
 //PARAM_F(LutStride,      LUT_STRIDE,       "Distance between y values for the LUT");
 PARAM_ARR(LutDataBuf,   LUT_DATA,           "Data of the LUT stored in a human form"); // g_LutDataBuf should not be used!
 
-#ifndef CC_DATA_AGGREGATE
-#define CC_DATA_AGGREGATE // Just so it doesn't cause any issues for older config versions
-#endif
 PARAM_ARR(_CustomCurveDataAggregate, CC_DATA_AGGREGATE, "Stores the Custom Curve data, SHOULD NOT BE USED ON THE DRIVER SIDE");
 
 PARAM_F(RotationAngle, ROTATION_ANGLE,      "Amount of clockwise rotation (in radians)");
@@ -80,9 +78,6 @@ PARAM_F(AngleSnap_Angle, ANGLE_SNAPPING_ANGLE,      "Amount of clockwise rotatio
 
 FP_LONG g_LutData_x[MAX_LUT_ARRAY_SIZE]; // Array to store the x-values of the LUT data
 FP_LONG g_LutData_y[MAX_LUT_ARRAY_SIZE]; // Array to store the y-values of the LUT data
-
-#define FP64_ONE 4294967296ll
-#define EXP_ARG_THRESHOLD 16ll
 
 // Converts given string to a unsigned long
 unsigned long atoul(const char *str) {
