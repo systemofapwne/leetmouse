@@ -214,14 +214,14 @@ void update_constants(void) {
     if (g_AccelerationMode == AccelMode_Lut || g_AccelerationMode == AccelMode_CustomCurve) {
         if (g_LutSize <= 1 || g_LutData_x[g_LutSize-1] == g_LutData_x[g_LutSize-2])
             g_AccelerationMode = AccelMode_Current;
-    }
 
-    // Check if LUT_x is sorted
-    for (int i = 1; i < g_LutSize; i++) {
-        if (g_LutData_x[i - 1] > g_LutData_x[i]) {
-            g_AccelerationMode = AccelMode_Current;
-            printk("YeetMouse: Error: Acceleration mode 'LUT' is not supported for unsorted LUT_x.\n");
-            break;
+        // Check if LUT_x is sorted
+        for (int i = 1; i < g_LutSize; i++) {
+            if (g_LutData_x[i - 1] > g_LutData_x[i]) {
+                g_AccelerationMode = AccelMode_Current;
+                printk("YeetMouse: Error: Acceleration mode 'LUT' is not supported for unsorted LUT_x.\n");
+                break;
+            }
         }
     }
 

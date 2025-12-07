@@ -260,6 +260,10 @@ namespace DriverHelper {
                     if (pairs[i].first == pairs[i - 1].first && pairs[i].second == pairs[i - 1].second) {
                         continue;
                     }
+
+                    if (pairs[i-1].first > pairs[i].first) {
+                        printf("Error: X values are not sorted! (x[i-1]: %f, x[i]: %f)\n", pairs[i-1].first, pairs[i].first);
+                    }
                 }
                 out_x[i] = pairs[i].first;
                 out_y[i] = pairs[i].second;

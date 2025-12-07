@@ -425,8 +425,8 @@ bool CachedFunction::ValidateSettings() {
     isValid = true;
 
     for (int i = 0; i < PLOT_POINTS; i++) {
-        if (std::isnan(values[i]) || std::isnan(values_y[i]) || std::isinf(values[i]) || std::isinf(values_y[i]) ||
-            values[i] > 1e5 || values_y[i] > 1e5) {
+        if (std::isnan(values[i]) || std::isinf(values[i]) || values[i] > 1e5 || (
+                params->use_anisotropy && (std::isnan(values_y[i]) || std::isinf(values_y[i]) || values_y[i] > 1e5))) {
             isValid = false;
             return isValid;
         }
@@ -443,11 +443,21 @@ bool CachedFunction::ValidateSettings() {
 
     if (params->accelMode == AccelMode_Lut || params->accelMode == AccelMode_CustomCurve) {
         if (params->LUT_size <= 1) {
+            printf("LUT size is not valid!\n");
             isValid = false;
             return isValid;
         }
         for (int i = 0; i < params->LUT_size; i++) {
             if (std::isnan(params->LUT_data_x[i]) || std::isnan(params->LUT_data_y[i])) {
+                printf("LUT data is not valid!\n");
+                isValid = false;
+                return isValid;
+            }
+        }
+        // Check if is sorted
+        for (int i = 1; i < params->LUT_size; i++) {
+            if (params->LUT_data_x[i-1] > params->LUT_data_x[i]) {
+                printf("LUT is not sorted!\n");
                 isValid = false;
                 return isValid;
             }
