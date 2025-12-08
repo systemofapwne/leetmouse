@@ -913,6 +913,11 @@ bool Tests::TestAccelLUT(float range_min, float range_max) {
 bool Tests::TestAccelMode(AccelMode mode, float range_min, float range_max) {
     static_assert(AccelMode_Count == 10);
 
+    // Just some random global parameters to make sure all the curves work with them (this might make debugging a hell)
+    TestManager::SetSensitivity(0.75f);
+    TestManager::SetOffset(2.f);
+    TestManager::SetPreScale(0.9f);
+
     switch (mode) {
         case AccelMode_Linear:
             return TestAccelLinear(range_min, range_max);

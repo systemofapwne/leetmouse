@@ -23,11 +23,13 @@ public:
     CachedFunction() {
     };
 
-    float EvalFuncAt(float x);
+    float EvalFuncAt(float x) const;
 
     void PreCacheConstants();
 
     void PreCacheFunc(); // Also validates settings
+
+    float EvaluateFuncWithGlobalParameters(float speed) const;
 
     // Result also saved into 'bool isValid'
     bool ValidateSettings();

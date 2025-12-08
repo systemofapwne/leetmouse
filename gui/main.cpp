@@ -556,10 +556,8 @@ int OnGui() {
         last_time_speed_record_broken = steady_clock::now();
     }
     float avg_speed = fmaxf(mouse_speed * (1 - mouse_smooth) + last_frame_speed * mouse_smooth, 0.01);
-    ImPlotPoint mousePoint_main = ImPlotPoint(avg_speed, avg_speed < params[selected_mode].offset
-                                                             ? params[selected_mode].sens
-                                                             : functions[selected_mode].EvalFuncAt(
-                                                                 avg_speed - params[selected_mode].offset));
+    ImPlotPoint mousePoint_main = ImPlotPoint(
+        avg_speed, functions[selected_mode].EvaluateFuncWithGlobalParameters(avg_speed));
 
     last_mouse_pos = {(float) mouse_pos[0], (float) mouse_pos[1]};
 
@@ -571,10 +569,8 @@ int OnGui() {
         recent_mouse_top_speed = 0;
 
     ImPlotPoint mousePoint_topSpeed = ImPlotPoint(recent_mouse_top_speed,
-                                                  recent_mouse_top_speed < params[selected_mode].offset
-                                                      ? params[selected_mode].sens
-                                                      : functions[selected_mode].EvalFuncAt(
-                                                          recent_mouse_top_speed - params[selected_mode].offset));
+                                                  functions[selected_mode].EvaluateFuncWithGlobalParameters(
+                                                      recent_mouse_top_speed));
 
     ImPlot::SetNextAxesLimits(0, PLOT_X_RANGE, 0, 4);
     /* ---------------------------- FUNCTION PLOT ---------------------------- */

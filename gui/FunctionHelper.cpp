@@ -3,6 +3,7 @@
 #include "FunctionHelper.h"
 
 #define EXP_ARG_THRESHOLD 16ll
+#define FUNC_EVAL_START_VAL 0.01f
 
 CachedFunction::CachedFunction(float xStride, Parameters *params)
         : x_stride(xStride), params(params) { }
@@ -111,7 +112,7 @@ float CachedFunction::SynchronousGainEval(float x) const {
     return y;
 }
 
-float CachedFunction::EvalFuncAt(float x) {
+float CachedFunction::EvalFuncAt(float x) const {
     static_assert(AccelMode_Count == 10);
 
     x *= params->preScale;
@@ -401,12 +402,12 @@ void CachedFunction::PreCacheConstants() {
 void CachedFunction::PreCacheFunc() {
     PreCacheConstants();
 
-    float x = -params->offset + 0.01;
+    float x = -params->offset + FUNC_EVAL_START_VAL;
     for (int i = 0; i < PLOT_POINTS; i++) {
         if (x < 0) {
             // skip offset
-            values[i] = params->sens;
-            values_y[i] = params->sensY;
+            values[i] = EvalFuncAt(FUNC_EVAL_START_VAL);
+            values_y[i] = params->sensY * values[i];
             x += x_stride;
             continue;
         }
@@ -418,6 +419,13 @@ void CachedFunction::PreCacheFunc() {
     }
 
     ValidateSettings();
+}
+
+float CachedFunction::EvaluateFuncWithGlobalParameters(float speed) const {
+    if (float x = speed - params->offset + FUNC_EVAL_START_VAL; x <= 0)
+        return EvalFuncAt(FUNC_EVAL_START_VAL);
+    else
+        return EvalFuncAt(x);
 }
 
 

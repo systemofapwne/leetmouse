@@ -225,6 +225,37 @@ void update_constants(void) {
         }
     }
 
+    static_assert(AccelMode_Count == 10, "Wrong AccelMode count!");
+    switch (g_AccelerationMode) {
+        case AccelMode_Linear:
+            modesConst.current_func_at_0 = accel_linear(FP64_0_01);
+            break;
+        case AccelMode_Power:
+            modesConst.current_func_at_0 = accel_power(FP64_0_01);
+            break;
+        case AccelMode_Classic:
+            modesConst.current_func_at_0 = accel_classic(FP64_0_01);
+            break;
+        case AccelMode_Motivity:
+            modesConst.current_func_at_0 = accel_motivity(FP64_0_01);
+            break;
+        case AccelMode_Synchronous:
+            modesConst.current_func_at_0 = accel_synchronous(FP64_0_01);
+            break;
+        case AccelMode_Natural:
+            modesConst.current_func_at_0 = accel_natural(FP64_0_01);
+            break;
+        case AccelMode_Jump:
+            modesConst.current_func_at_0 = accel_jump(FP64_0_01);
+            break;
+        case AccelMode_Lut: case AccelMode_CustomCurve:
+            modesConst.current_func_at_0 = accel_lut(FP64_0_01);
+            break;
+        default:
+            modesConst.current_func_at_0 = FP64_1;
+            break;
+    }
+
     // Rotation (precalculate the trig. functions)
     modesConst.sin_a = FP64_Sin(g_RotationAngle);
     modesConst.cos_a = FP64_Cos(g_RotationAngle);
