@@ -300,12 +300,12 @@ namespace DriverHelper {
         return idx / 2;
     }
 
-    std::string EncodeLutData(double *data_x, double *data_y, size_t size) {
+    std::string EncodeLutData(double *data_x, double *data_y, size_t size, bool strict_format) {
         std::stringstream res;
         res << std::setprecision(LUT_EXPORT_PRECISION);
 
         for (int i = 0; i < size * 2; i++) {
-            res << (i % 2 == 0 ? data_x[i / 2] : data_y[i / 2]) << (i % 2 == 0 ? "," : ";");
+            res << (i % 2 == 0 ? data_x[i / 2] : data_y[i / 2]) << ((strict_format && i % 2 == 0) ? "," : ";");
         }
 
         return res.str();

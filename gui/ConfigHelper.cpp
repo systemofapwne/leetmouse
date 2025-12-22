@@ -67,7 +67,7 @@ namespace ConfigHelper {
             res_ss << "as_threshold=" << params.as_threshold << std::endl;
             res_ss << "as_angle=" << params.as_angle << std::endl;
             res_ss << "LUT_size=" << params.LUT_size << std::endl;
-            res_ss << "LUT_data=" << DriverHelper::EncodeLutData(params.LUT_data_x, params.LUT_data_y, params.LUT_size) << std::endl;
+            res_ss << "LUT_data=" << DriverHelper::EncodeLutData(params.LUT_data_x, params.LUT_data_y, params.LUT_size, true) << std::endl;
             res_ss << "CC_data_aggregate=" << params.customCurve.ExportCustomCurve();
 
             if (save_to_file) {
@@ -114,7 +114,7 @@ namespace ConfigHelper {
             res_ss << "#define ANGLE_SNAPPING_ANGLE " << (params.as_angle * DEG2RAD) << std::endl;
             res_ss << "#define LUT_SIZE " << params.LUT_size << std::endl;
             res_ss << "#define LUT_DATA " << DriverHelper::EncodeLutData(
-                params.LUT_data_x, params.LUT_data_y, params.LUT_size) << std::endl;
+                params.LUT_data_x, params.LUT_data_y, params.LUT_size, false) << std::endl;
             res_ss << "#define CC_DATA_AGGREGATE " << params.customCurve.ExportCustomCurve();
 
             if (save_to_file) {

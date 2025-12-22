@@ -117,11 +117,10 @@ int OnGui() {
                             params[i].LUT_data_x, params[i].LUT_data_y);
                         params[i].customCurve.ApplyCurveConstraints();
                         params[i].customCurve.UpdateLUT();
-                    } else {
+                    } else
                         params[i] = imported_params;
-                        params[i].accelMode = static_cast<AccelMode>(i == 0 ? used_mode : i);
-                    }
 
+                    params[i].accelMode = static_cast<AccelMode>(i == 0 ? used_mode : i);
                     functions[i] = CachedFunction(((float) PLOT_X_RANGE) / PLOT_POINTS, &params[i]);
                     functions[i].PreCacheFunc();
                 }
@@ -232,7 +231,7 @@ int OnGui() {
 #ifdef USE_INPUT_DRAG
                 change |= ImGui::DragFloat("##Accel_Param", &params[selected_mode].accel, 0.0001, 0.0005, 0.1, "Acceleration %0.4f", ImGuiSliderFlags_Logarithmic);
 #else
-                change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0.0005, 0.1,
+                change |= ImGui::SliderFloat("##Accel_Param", &params[selected_mode].accel, 0.0, 0.1,
                                              "Acceleration %0.4f", ImGuiSliderFlags_Logarithmic);
                 ImGui::SetItemTooltip("Ctrl+LMB to input any value you want");
 #endif

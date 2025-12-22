@@ -37,7 +37,7 @@ namespace DriverHelper {
     /// Returns the number of parsed values
     size_t ParseDriverLutData(const char *user_data, double *out_x, double *out_y);
 
-    std::string EncodeLutData(double *data_x, double *data_y, size_t size);
+    std::string EncodeLutData(double *data_x, double *data_y, size_t size, bool strict_format = true);
 } // DriverHelper
 
 inline std::string AccelMode2String(AccelMode mode) {

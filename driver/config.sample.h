@@ -21,10 +21,10 @@
 #define LUT_DATA 0
 
 // Mode-specific parameters
-#define ACCELERATION 0.15
-#define MIDPOINT 2
+#define ACCELERATION 0.1
+#define MIDPOINT 1.3
 #define MOTIVITY 1.5
-#define EXPONENT 0.2
+#define EXPONENT 1.8
 #define USE_SMOOTHING 1 // 1 - True, 0 - False
 
 // Custom Curve (Not used on the driver side)
