@@ -21,6 +21,7 @@ package_yeetmouse() {
 package_yeetmouse-driver-dkms() {
   pkgdesc="Kernel driver for YeetMouse (DKMS-variant)"
   depends=('dkms')
+  conflicts=('leetmouse-driver-dkms')
   install=yeetmouse-driver-dkms.install
 
   cd "$pkgbase-$pkgver"
