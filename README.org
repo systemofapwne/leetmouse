@@ -1,3 +1,17 @@
+* ⚠️ Deprecation notice ⚠️
+This project is no longer actively maintained and considered deprecated.
+
+Check out [[https://github.com/AndyFilter/YeetMouse][YeetMouse]] as a spiritual successor. It features everything that LEETMOUSE can do and so much more.
+
+You can convert your existing LEETMOUSE config to a YeetMouse equivalent by simply running the =leet2yeet.py= script in this repo.
+#+begin_src sh
+# Reads in ./driver/config.h (LEETMOUSE) and exports it to a YeetMouse equivalent to ./config.h
+./leet2yeet.py > config.h
+#+end_src
+
+-----
+
+
 * Description
   The =LEETMOUSE= kernelmodule enables quake-live like acceleration for your mouse on Linux and is heavily inspired by previous works from [[https://www.kovaak.com/mouse-acceleration][Povohat's mouse driver for Windows.]]
   =LEETMOUSE= basically fuses the original [[https://github.com/torvalds/linux/blob/master/drivers/hid/usbhid/usbmouse.c][Linux USB mouse driver]] code with the acceleration code-base and has been initially developed by [[https://github.com/chilliams][Christopher Williams]].
