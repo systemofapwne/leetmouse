@@ -12,6 +12,7 @@ def parse_leet_cfg(path="./driver/config.h"):
     with open(path, 'r') as file:
         data = file.readlines()
         data = "\n".join(data)
+        data = re.sub(r'//.*', '', data) # Remove comments
     
     entries = re.findall(r'#define\s+([A-Z_]+)\s+([\d+\.]+)', data)
     entries = {name.lower(): float(value) for name, value in entries}
