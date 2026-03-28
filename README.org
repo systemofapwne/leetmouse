@@ -104,7 +104,7 @@
    *Installation*
    #+begin_src sh
    make pkgarch
-   sudo pacman -U pkg/build/yeetmouse*.zst
+   sudo pacman -U yeetmouse*.zst
    sudo modprobe yeetmouse
    #+end_src
 
@@ -228,6 +228,9 @@
 - YeetMouse currently doesn't support applying the LUT as velocity.
 - To convert a velocity LUT into a sensitivity (normal) LUT, use the Python script from this comment: https://github.com/AndyFilter/YeetMouse/issues/67#issuecomment-3620653542.
 - For the EPP (Enhance Pointer Precision) curve specifically, use the config from this comment: https://github.com/AndyFilter/YeetMouse/issues/67#issuecomment-3620653542.
+
+** More questions
+If you have any issues / questions regarding this project, feel free to ask them either directly through GitHub or on the [[https://discord.gg/z2qCD2zNTa][Discord server]].
 
 * Fixed-Point Performance Analysis
   #+CAPTION: Functions Performance Comparison

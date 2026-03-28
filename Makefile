@@ -38,13 +38,13 @@ clean: driver_clean
 GUI:
 	@echo -e "\n::\033[32m Building GUI application\033[0m"
 	@echo "========================================"
-	$(MAKE) -C $(GUIDIR) M=$(GUIDIR)
+	$(MAKE) -C "$(GUIDIR)" M="$(GUIDIR)"
 	@echo "DONE!"
 
 yeetmousectl:
 	@echo -e "\n::\033[32m Building yeetmousectl\033[0m"
 	@echo "========================================"
-	$(MAKE) -C $(YEETMOUSECTLDIR) M=$(YEETMOUSECTLDIR)
+	$(MAKE) -C "$(YEETMOUSECTLDIR)" M="$(YEETMOUSECTLDIR)"
 	@echo "DONE!"
 
 userspace: yeetmousectl
@@ -56,7 +56,7 @@ ifeq ($(ARCH),ppc64le)
 	@echo "PowerPC 64-bit Little Endian detected"
 endif
 	@cp -n $(DRIVERDIR)/config.sample.h $(DRIVERDIR)/config.h || true
-	$(MAKE) -C $(KERNELDIR) M=$(DRIVERDIR) modules
+	$(MAKE) -C "$(KERNELDIR)" M="$(DRIVERDIR)" modules
 
 driver_clean:
 	@echo -e "\n::\033[32m Cleaning yeetmouse kernel module\033[0m"
