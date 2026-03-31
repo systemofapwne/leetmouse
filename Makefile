@@ -160,13 +160,15 @@ install_config:
 install_service:
 	@echo -e "\n::\033[34m Installing systemd service\033[0m"
 	@echo "====================================================="
-	install -m 755 -v -d $(DESTDIR)/usr/lib/systemd/system
+	install -m 755 -v -d $(DESTDIR)/usr/lib/{systemd/system,sysusers.d}
 	install -m 644 -v install_files/systemd/yeetmouse.service $(DESTDIR)/usr/lib/systemd/system/yeetmouse.service
+	install -m 644 -v install_files/sysusers/yeetmouse.conf   $(DESTDIR)/usr/lib/sysusers.d/yeetmouse.conf
 
 remove_service:
 	@echo -e "\n::\033[34m Removing systemd service\033[0m"
 	@echo "====================================================="
 	rm -f $(DESTDIR)/usr/lib/systemd/system/yeetmouse.service
+	rm -f $(DESTDIR)/usr/lib/sysusers.d/yeetmouse.conf
 
 remove_dkms:
 	@echo -e "\n::\033[34m Removing DKMS files\033[0m"
@@ -176,11 +178,11 @@ remove_dkms:
 install_i_know_what_i_am_doing: all driver_install install_userspace install_config install_service install_uninstaller install_gui
 install: manual_install_msg ;
 
-pkgarch:
+-include pkg.mk
+pkgarch: pkg_arch
 	@echo -e "\n::\033[34m Building installable arch package\033[0m"
 	@echo "====================================================="
-	@./scripts/build_arch.sh
-	@mv ./pkg/build/yeetmouse*.zst .
+	@mv ./pkg/build/arch/yeetmouse*.zst .
 
 manual_install_msg:
 	@echo "Please do not install the driver using this method. Use a distribution package as it tracks the files installed and can remove them afterwards. If you are 100% sure, you want to do this, find the correct target in the Makefile."

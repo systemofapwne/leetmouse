@@ -106,11 +106,15 @@
    make pkgarch
    sudo pacman -U yeetmouse*.zst
    sudo modprobe yeetmouse
+   # Optional, if using YeetMouseGUI or the systemd service for local config at /etc/yeetmouse.conf
+   sudo systemctl enable --now yeetmouse.service
+   sudo usermod -a -G yeetmouse <your user name>
+   # Now log out and log in or alternatively restart your system
    #+end_src
 
    *Uninstallation*
    #+begin_src sh
-   sudo pacman -R yeetmouse yeetmouse-driver-dkms yeetmouse-gui
+   sudo pacman -R yeetmouse yeetmouse-driver-dkms yeetmouse-tools yeetmouse-gui
    #+end_src
 
 ** Ubuntu (tested on 24.04 and 20.04)

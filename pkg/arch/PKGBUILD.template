@@ -2,7 +2,7 @@
 # Contributor: Christopher Williams <chilliams (at) gmail (dot) com>
 
 pkgbase=yeetmouse
-pkgname=('yeetmouse' 'yeetmouse-gui' 'yeetmouse-driver-dkms')
+pkgname=('yeetmouse' 'yeetmouse-driver-dkms' 'yeetmouse-tools' 'yeetmouse-gui' )
 pkgver=__VERSION__
 pkgrel=1
 pkgdesc="USB HID input handler applying mouse acceleration"
@@ -15,7 +15,7 @@ sha256sums=('__HASH__')
 
 package_yeetmouse() {
   pkgdesc="Meta package for the full YeetMouse experience"
-  depends=('yeetmouse-gui' 'yeetmouse-driver-dkms')
+  depends=('yeetmouse-driver-dkms' 'yeetmouse-tools' 'yeetmouse-gui')
 }
 
 package_yeetmouse-driver-dkms() {
@@ -25,19 +25,24 @@ package_yeetmouse-driver-dkms() {
   install=yeetmouse-driver-dkms.install
 
   cd "$pkgbase-$pkgver"
-  echo $pkgbase-$pkgver
   make DESTDIR="$pkgdir" setup_dkms
+}
+
+package_yeetmouse-tools() {
+  pkgdesc="Userspace tools to controle YeetMouse driver"
+  depends=('yeetmouse-driver-dkms')
+  install=yeetmouse-tools.install
+
+  backup=(etc/yeetmouse.conf)
+
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install_userspace install_config install_service
 }
 
 package_yeetmouse-gui() {
   pkgdesc="GUI to configure the YeetMouse driver"
-  depends=('yeetmouse-driver-dkms')
+  depends=('yeetmouse-driver-dkms' 'systemd')
 
   cd "$pkgbase-$pkgver"
-  echo $pkgbase-$pkgver
-  make DESTDIR="$pkgdir" GUI
-  
-  install -d                        "${pkgdir}/usr/bin/"
-  install -Dm755 gui/YeetMouseGui   "${pkgdir}/usr/bin/"
-  ln -s /usr/bin/YeetMouseGui       "${pkgdir}/usr/bin/yeetmouse"
+  make DESTDIR="$pkgdir" install_gui
 }

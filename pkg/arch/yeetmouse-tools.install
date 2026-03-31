@@ -1,0 +1,21 @@
+post_install() {
+  cat<<EOF
+
+You need to enable the YeetMouse systemd service:
+
+  sudo systemctl enable --now yeetmouse.service
+
+EOF
+}
+
+post_upgrade() {
+  cat<<EOF
+
+Please add new users to 'yeetmouse' group
+
+  sudo usermod -a -G yeetmouse <username>
+
+Reboot your system, so changes will take effect..
+
+EOF
+}
