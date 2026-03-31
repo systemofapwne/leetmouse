@@ -5,8 +5,13 @@ Check out [[https://github.com/AndyFilter/YeetMouse][YeetMouse]] as a spiritual 
 
 You can convert your existing LEETMOUSE config to a YeetMouse equivalent by simply running the =leet2yeet.py= script in this repo.
 #+begin_src sh
-# Reads in ./driver/config.h (LEETMOUSE) and exports it to a YeetMouse equivalent to ./config.h
-./leet2yeet.py > config.h
+# Method 1: New YeetMouse config style (March 2026)
+./leet2yeet.py > yeetmouse.conf
+# Copy that file to /etc/yeetmouse.conf after you installed YeetMouse including its 'yeetmousectl' binary.
+
+# Method 2: Legacy YeetMouse config style (precompiled config)
+./leet2yeet.py --legacy > default.h
+# Copy the 'default.h' file to <YeetMouse repository>/driver/default.h and then follow the installation instructions of YeetMouse
 #+end_src
 
 -----

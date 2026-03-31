@@ -18,17 +18,24 @@ def parse_leet_cfg(path="./driver/config.h"):
     
     return entries
 
-def build_yeet_cfg(pre_scale, input_cap, offset, sensitivity, acceleration, sensitivity_y, output_cap, smoothing=False):
+def build_yeet_legacy_cfg(pre_scale, input_cap, offset, sensitivity, acceleration, sensitivity_y, output_cap, smoothing=False):
     return f"""// Acceleration Mode
 #define ACCELERATION_MODE AccelMode_Linear
 
 // Global Parameters
 #define SENSITIVITY {sensitivity:.4g} // For compatibility this is named SENSITIVITY, but it really refers just to the X axis
-#define SENSITIVITY_Y {sensitivity_y:.4g} // Ratio Y/X
+#define RATIO_YX {sensitivity_y:.4g} // Sensitivity ratio Y/X
 #define OUTPUT_CAP {output_cap:.4g}
 #define INPUT_CAP {input_cap:.4g}
 #define OFFSET {offset:.4g}
 #define PRESCALE {pre_scale:.4g}
+
+// Mode-specific parameters
+#define ACCELERATION {acceleration:.4g}
+#define MIDPOINT 1.3
+#define MOTIVITY 1.5
+#define EXPONENT 1.8
+#define USE_SMOOTHING {1 if smoothing else 0} // 1 - True, 0 - False
 
 // Angle Snapping (in radians)
 #define ANGLE_SNAPPING_THRESHOLD 0 // 0 deg. in rad.
@@ -41,15 +48,29 @@ def build_yeet_cfg(pre_scale, input_cap, offset, sensitivity, acceleration, sens
 #define LUT_SIZE 0
 #define LUT_DATA 0
 
-// Mode-specific parameters
-#define ACCELERATION {acceleration:.4g}
-#define MIDPOINT 1.3
-#define MOTIVITY 1.5
-#define EXPONENT 1.8
-#define USE_SMOOTHING {1 if smoothing else 0} // 1 - True, 0 - False
-
 // Custom Curve (Not used on the driver side)
 #define CC_DATA_AGGREGATE
+"""
+
+def build_yeet_cfg(pre_scale, input_cap, offset, sensitivity, acceleration, sensitivity_y, output_cap, smoothing=False):
+    return f"""sens={sensitivity:.4g}
+ratioYX={sensitivity_y:.4g}
+outCap={output_cap:.4g}
+inCap={input_cap:.4g}
+offset={offset:.4g}
+accel={acceleration:.4g}
+exponent=1.8
+midpoint=1.3
+motivity=1.5
+preScale={pre_scale:.4g}
+accelMode=AccelMode_Linear
+useSmoothing={1 if smoothing else 0}
+rotation=0
+as_threshold=0
+as_angle=0
+LUT_size=0
+LUT_data=
+CC_data_aggregate=
 """
 
 def convert(
@@ -195,6 +216,8 @@ if __name__ == "__main__":
     parser.add_argument('--config','-c', metavar='CFG', type=str,
                         default='./driver/config.h',
                         help="Path to LEETMOUSE config file. Default: %(default)s")
+    parser.add_argument('--legacy','-l', action='store_true',
+                        help='Returns legacy config.h/default.h C-header config file instead of the new yeetmouse.conf style')
     parser.add_argument('--params','-p', action='store_true',
                         help='Only return converted parameters instead of generating YeetMouse config.h')
     parser.add_argument('--test','-t', action='store_true',
@@ -220,4 +243,5 @@ if __name__ == "__main__":
         exit(0)
     
     # Convert to YeetMouse config.h
-    print(build_yeet_cfg(**params_yeet))
+    cfg_builder = build_yeet_legacy_cfg if args.legacy else build_yeet_cfg
+    print(cfg_builder(**params_yeet))
